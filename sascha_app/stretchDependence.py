@@ -4,6 +4,15 @@
 # NOTE: I am using a whitespace of 2 spaces.
 
 
+def interp2D(pairs,z,x,y):
+  # This is given a pair of points to interpolate, my aim is to just linearly interpolate. Very simple approach.
+  # pairs: 	The dictionary used here, or in other cases a set of tuples (x,y)
+  # z: 		The known stretch terms, or a 3rd dimension if used in other cases
+  # x,y:	These should be the input that needs to be interpolated. y is the Volts, x is the crater location
+  
+
+  return 0 # for now it does nothing so it returns 0 but doesn't cause an error in my code...
+
 def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of Volts and mm's
   # This is just the hard coded data that will be used to interpolate the other possible input data points.
   pairs = ((2500,52.8),(2500,75.7),(2500,104.2),(2600,52.8),(2600,75.7),(2600,104.2),\
