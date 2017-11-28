@@ -9,6 +9,11 @@ def interp2D(pairs,z,x,y):
   # pairs: 	The dictionary used here, or in other cases a set of tuples (x,y)
   # z: 		The known stretch terms, or a 3rd dimension if used in other cases
   # x,y:	These should be the input that needs to be interpolated. y is the Volts, x is the crater location
+ 
+  # Find the bounding tuples I need to interpolate:
+  # let y1/x1 & y2/x2 be upper & lower voltage/Impact Loc bounds
+  
+  # Now interpolate...
   
 
   return 0 # for now it does nothing so it returns 0 but doesn't cause an error in my code...
