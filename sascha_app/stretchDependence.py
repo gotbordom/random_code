@@ -4,6 +4,10 @@
 # NOTE: I am using a whitespace of 2 spaces.
 
 
+import matplotlib.pyplot as plt
+import numpy as np						# ONLY FOR THE SAKE OF TESTING LATER....
+
+
 def interp2d(data,z,x):
   # Inputs:
   #  data - The known [(x1,y1),(x2,y2)]
@@ -43,23 +47,36 @@ def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of V
 	       2685,2685,2685,2700,2700,2700,\
 	       2800,2800,2800,2900,2900,2900]
   locs  = [52.8,75.7,104.2,52.8,75.7,104.2,\
-           52.8,75.8,104.2,52.8,75.8,104.2,\
-           52.8,75.8,104.2,52.8,75.8,104.2]
+           52.8,75.7,104.2,52.8,75.7,104.2,\
+           52.8,75.7,104.2,52.8,75.7,104.2]
 
   stretch = [950,908,883,888,856,826,837,815,788,837,769,740,796,769,740,759,734,707]
   mydict = {}
+
+  #volt = round(volt)
+  #impact = round(impact)
+
   for i in range(len(stretch)):
     mydict[(volts[i],locs[i])]=stretch[i]
   
   # If data is in the dictionary:
-  if mydict[volt,impact]:
+  if mydict.has_key((volt,impact)):
+    #print volt,impact
     return mydict[volt,impact]
   # If data needs to be interpolated:
   else:
-    low = max([i for i in volts if i < volts]),max([i for i in volts if i < impact])
-    high = min([i for i in volts if i > volts]),min([i for i in volts if i > impact])
+    #print"else: ", volt,impact
+    low = max([i for i in volts if i < volt]),max([i for i in locs if i < impact])
+    high = min([i for i in volts if i > volt]),min([i for i in locs if i > impact])
+    data = [low,high]
+    z = [mydict[low],mydict[low[0],high[1]],mydict[high[0],low[1]],mydict[high]]
     
-    return 0	# Currently zero for false, as I have yet to do this part...
+    #print "l: ",low
+    #print "h: ",high 
+    #print "d: ",data
+    #print "z: ",z
+
+    return interp2d(data,z,(volt,impact))	# Currently zero for false, as I have yet to do this part...
 
 # Testing the above function:
 #pairs = ((2500,52.8),(2500,75.7),(2500,104.2),(2600,52.8),(2600,75.7),(2600,104.2),\
@@ -67,6 +84,21 @@ def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of V
 #           (2800,52.8),(2800,75.8),(2800,104.2),(2900,52.8),(2900,75.8),(2900,104.2))
 
 
+vSpace = np.arange(2501,2899,10)
+xSpace = np.arange(53.8,103.2,1)
 
-print stretchDep(2600,52.8)
+ds = np.zeros((len(vSpace),len(xSpace)))
+
+for i in range(len(vSpace)):
+  for j in range(len(xSpace)):
+    ds[i,j]=(stretchDep(vSpace[i],xSpace[j]))
+
+V,X = np.meshgrid(vSpace,xSpace)
+dv = (vSpace[1]-vSpace[0])/2.
+dx = (xSpace[1]-xSpace[0])/2.
+extent = [vSpace[0]-dv, vSpace[-1]+dv, xSpace[0]-dx, xSpace[-1]+dx]
+im = plt.imshow(ds,extent=extent)
+plt.colorbar(im)
+plt.show()
+
 
