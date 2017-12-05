@@ -84,21 +84,24 @@ def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of V
 #           (2800,52.8),(2800,75.8),(2800,104.2),(2900,52.8),(2900,75.8),(2900,104.2))
 
 
-vSpace = np.arange(2501,2899,10)
-xSpace = np.arange(53.8,103.2,1)
+vSpace = np.linspace(2501,2899,10)
+xSpace = np.linspace(53.8,103.2,10)
 
-ds = np.zeros((len(vSpace),len(xSpace)))
+ds2D = np.zeros((len(vSpace),len(xSpace)))
+ds1D = []
 
 for i in range(len(vSpace)):
   for j in range(len(xSpace)):
-    ds[i,j]=(stretchDep(vSpace[i],xSpace[j]))
-
+    ds2D[i,j]=(stretchDep(vSpace[i],xSpace[j]))
+    
 V,X = np.meshgrid(vSpace,xSpace)
 dv = (vSpace[1]-vSpace[0])/2.
 dx = (xSpace[1]-xSpace[0])/2.
 extent = [vSpace[0]-dv, vSpace[-1]+dv, xSpace[0]-dx, xSpace[-1]+dx]
-im = plt.imshow(ds,extent=extent)
+im = plt.imshow(ds2D,extent=extent)
+plt.xlabel('Volts')
+plt.ylabel('Impact Distance (mm)')
 plt.colorbar(im)
-plt.show()
-
+plt.savefig("fullRangeTest.jpg")
+plt.show(im)
 
