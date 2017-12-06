@@ -3,10 +3,7 @@
 # Description: This is a function that is basically a look up table. If the value is between two knowns, interpolate.
 # NOTE: I am using a whitespace of 2 spaces.
 
-
-import matplotlib.pyplot as plt
-import numpy as np						# ONLY FOR THE SAKE OF TESTING LATER....
-
+import argparse
 
 def interp2d(data,z,x):
   # Inputs:
@@ -43,6 +40,9 @@ def interp2d(data,z,x):
 
 def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of Volts and mm's
   # This is just the hard coded data that will be used to interpolate the other possible input data points.
+  # Make sure that the input is within the region of known data:
+  assert(volt <= 2900 and volt >= 2500),"The input voltage, %f, is outside the known dataset. It must be between 2500 and 2900" % (volt)
+  assert(impact <= 104.2 and impact >= 53.8),"The input impact location, %f, is outside the known dataset. It must be between 52.8 and 104.2" % (impact)
   volts = [2500,2500,2500,2600,2600,2600,\
 	       2685,2685,2685,2700,2700,2700,\
 	       2800,2800,2800,2900,2900,2900]
@@ -61,47 +61,29 @@ def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of V
   
   # If data is in the dictionary:
   if mydict.has_key((volt,impact)):
-    #print volt,impact
     return mydict[volt,impact]
-  # If data needs to be interpolated:
   else:
-    #print"else: ", volt,impact
-    low = max([i for i in volts if i < volt]),max([i for i in locs if i < impact])
-    high = min([i for i in volts if i > volt]),min([i for i in locs if i > impact])
+    low = max([i if i < volt else 2500 for i in volts]),max([i if i < impact else 52.8 for i in locs])
+    high = min([i if i > volt else 2900 for i in volts]),min([i if i > impact else 104.2 for i in locs])
     data = [low,high]
     z = [mydict[low],mydict[low[0],high[1]],mydict[high[0],low[1]],mydict[high]]
-    
-    #print "l: ",low
-    #print "h: ",high 
-    #print "d: ",data
-    #print "z: ",z
-
     return interp2d(data,z,(volt,impact))	# Currently zero for false, as I have yet to do this part...
 
-# Testing the above function:
-#pairs = ((2500,52.8),(2500,75.7),(2500,104.2),(2600,52.8),(2600,75.7),(2600,104.2),\
-#           (2685,52.8),(2685,75.8),(2685,104.2),(2700,52.8),(2700,75.8),(2700,104.2),\
-#           (2800,52.8),(2800,75.8),(2800,104.2),(2900,52.8),(2900,75.8),(2900,104.2))
+# Use the above functions plus terminal arguments to evaluate a given voltage and distance:
+ap = argparse.ArgumentParser()
+ap.add_argument("-v",
+				required=True,
+				type=float,
+				help="The voltage to be used. Between 2500 and 2900 (mAs?)")
+ap.add_argument("-x",
+                required=True,
+                type=float,
+                help="The impact location to be used. Between 52.8 and 104.2 (mm)")
+args = ap.parse_args()
+
+# Run the functions
+print stretchDep(args.v,args.x)
 
 
-vSpace = np.linspace(2501,2899,10)
-xSpace = np.linspace(53.8,103.2,10)
 
-ds2D = np.zeros((len(vSpace),len(xSpace)))
-ds1D = []
-
-for i in range(len(vSpace)):
-  for j in range(len(xSpace)):
-    ds2D[i,j]=(stretchDep(vSpace[i],xSpace[j]))
-    
-V,X = np.meshgrid(vSpace,xSpace)
-dv = (vSpace[1]-vSpace[0])/2.
-dx = (xSpace[1]-xSpace[0])/2.
-extent = [vSpace[0]-dv, vSpace[-1]+dv, xSpace[0]-dx, xSpace[-1]+dx]
-im = plt.imshow(ds2D,extent=extent)
-plt.xlabel('Volts')
-plt.ylabel('Impact Distance (mm)')
-plt.colorbar(im)
-plt.savefig("fullRangeTest.jpg")
-plt.show(im)
 
