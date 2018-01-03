@@ -4,7 +4,7 @@
 #   1. This is my code I wrote but was taken and altered from Collective Intelligence published by O'Reilly
 #   2. I am using a 2 space whitespace...
 
-import time
+from math import sqrt
 
 # Euclidian Distance for finding similarities:
 def sim_dist(prefs,person1,person2):
@@ -105,5 +105,21 @@ def transformPrefs(prefs):
       result[item][person]=prefs[person][item]
   return result
 
-# Calculating similar items rather than similar 
+# Calculating similar items rather than similar people:
+def calcSimItems(prefs,n=10)
+  # Create dictionary of n items, with the items they are most similar to:
+  result={}
+  # Invert prefs to be item focused:
+  itemPrefs=transformPrefs(prefs)
+  c=0
+  for item in itemPrefs:
+    # This is just a status update...
+    c+=1
+    if c%100==0: print "%d / %d" %(c,len(itemPrefs))
+    # Looking at item, what are most similar to it from the given prefs:
+    scores=topMatches(itemPrefs,item,n=n,similarity=sim_dist)
+    result[item]=scores
+  return result
+
+
 
