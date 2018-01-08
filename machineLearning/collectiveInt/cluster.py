@@ -47,4 +47,36 @@ class bicluster:
     self.distamce=distance
     self.id=id
 
+def hcluster(rows,distance=pearson):
+  distances={}
+  currentclustid=-1
+  # Clusters are initially just every row:
+  clust=[bicluster(rows[i],id=i) for i in range(len(rows))]
+  while len(clust)>1:
+    lowestpair=(0,1)
+    closest=distance(clust[0].vec,clust[1].vec)
+    # Loop through all pairs to verify lowest and closest:
+    for i in range(len(clust)):
+      for j in range(i+1,len(clust)):
+        # make the distance calculations to save on time, only run dist once for each pair:
+        if (clust[i].id,clust[j].id) not in distances:
+          distances[(clust[i].id,clust[j].id)]=distance(clust[i].vec,clust[j].vec)
+        d=distances[(clust[i].id,clust[j].id)]
+        if d < closest:
+          closest=d
+          lowestpair=(i,j)
+    # Calculate average of the two clusters made:
+    mergevec=[(clust[lowestpair[0]].vec[i]+clust[lowestpair[1]].vec[i])/2.0 for i in range(len(clust[0].vec))]
+    # Create the new clusters:
+    newcluster=bicluster(meergevec,
+                         left=clust[lowestpair[0]],
+                         right=clust[lowestpair[1]],
+                         distance=closest,
+                         id=currentclusterid)
+    # Cluster ids are negative if they are not from the initial N clusters made by N-words.
+    currentclustid-=1
+    del clust[lowestpair[1]]  # Order does matter on how these are deleted. Delete the later in the list first.
+    del clust[lowestpair[0]]
+    clust.append(newcluster)
+  return clust[0]
 
