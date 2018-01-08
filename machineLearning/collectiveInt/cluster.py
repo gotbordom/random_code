@@ -26,25 +26,25 @@ def readfile(filename):
 def pearson(v1,v2):
   # Simple sums
   sum1=sum(v1)
-  sum2=sum(vw2)
+  sum2=sum(v2)
   # Sum of squares:
   sum_sqr1=sum([pow(v,2) for v in v1])
   sum_sqr2=sum([pow(v,2) for v in v2])
   # Sum of products:
   pSum=sum([v1[i]*v2[i] for i in range(len(v1))])
   # Calculate r (pearson score):
-  num=pSum-sum(sum1*sum2/len(v1))
+  num=pSum-(sum1*sum2/len(v1))
   den=sqrt((sum_sqr1-pow(sum1,2)/len(v1))*(sum_sqr2-pow(sum2,2)/len(v1)))
-  if len(den)==0: return 0
+  if den==0: return 0
 
   return 1.0-(num/den)
 
 class bicluster:
-  def __init__(self,vec,left=None,right=None,distnace=0.0,id=None):
+  def __init__(self,vec,left=None,right=None,distance=0.0,id=None):
     self.left=left
     self.right=right
     self.vec=vec
-    self.distamce=distance
+    self.distance=distance
     self.id=id
 
 def hcluster(rows,distance=pearson):
@@ -68,11 +68,11 @@ def hcluster(rows,distance=pearson):
     # Calculate average of the two clusters made:
     mergevec=[(clust[lowestpair[0]].vec[i]+clust[lowestpair[1]].vec[i])/2.0 for i in range(len(clust[0].vec))]
     # Create the new clusters:
-    newcluster=bicluster(meergevec,
+    newcluster=bicluster(mergevec,
                          left=clust[lowestpair[0]],
                          right=clust[lowestpair[1]],
                          distance=closest,
-                         id=currentclusterid)
+                         id=currentclustid)
     # Cluster ids are negative if they are not from the initial N clusters made by N-words.
     currentclustid-=1
     del clust[lowestpair[1]]  # Order does matter on how these are deleted. Delete the later in the list first.
