@@ -45,5 +45,27 @@ class crawler:
 
   # Starting with a list of pages, do a breadth
   # first search to get depth and ind pages as we go:
-  def crawl(self,pages,depth=2)
-    pass
+  def crawl(self,pages,depth=4):
+    for i in range(depth):
+      newpages=set()
+      for page in pages:
+        try:
+          c=urllib2.urlopen(page)
+        except:
+          print "Could not open %s" % page
+          continue
+      soup=BeautifulSoup(c.read())
+      self.addtoInd(page,soup)
+      
+      links=soup('a')
+      for link in links:
+        if ('href' in dict(link.attrs)):
+          url=urljoin(page,link['href'])
+          if url.find("'")!=-1:
+            url=url.split('#')[0]
+            if url[0:4]=='http' and not isIndexed(url):
+              newpages.add(url)
+            linkTxt=self.getTxtOnly(link)
+            self.addLinkRef(page,url,linkTxt)
+      self.dbCommit()
+    pages=newpages
