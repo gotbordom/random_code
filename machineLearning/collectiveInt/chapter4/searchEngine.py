@@ -3,7 +3,13 @@
 
 # Learning about PageRank algorithm
 
-import 
+import urllib2
+from BeautifulSoup import *
+from urlparse import urljoin
+
+# words to ignore:
+ignoreWords=['the','of','to','and','a','in','is','it']
+# Testing git save....
 
 class crawler:
   def __init__(self,dbName):
