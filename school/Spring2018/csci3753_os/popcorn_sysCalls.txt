@@ -1,0 +1,5 @@
+Name: Anthony Tracy
+
+syscall_333: helloworld.c
+syscall_334: simple_add.c:w
+
