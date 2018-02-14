@@ -1,0 +1,48 @@
+Communication of OS to Devices:
+
+  OS -> Device Drivers -> Device Controller -> Device
+
+So where to start:
+
+  1. Device Drivers:
+     - Looking at the LKM (loadable kernal module)
+     - Outlines what the device can do, and how it can do it
+     
+     - SO how do we add driver code to the kernel WITHOUT re-compiling the kernel?
+       - 
+
+  2. Device Controller:
+     - Three states:
+       1. Idle    - doing nothing
+       2. Working - doing something, reading(), writing(), ...
+       3. Finished- done, has something to be read() from it and can be put back into Idle / take a new process
+
+     - SO what do we do when the device controller says it has something to do?
+     - Types of devices
+       1. Pulling I/O device:
+           - This is a type of device that the CPU will have to constantly ping to ask how it's doing...
+             - So everytime a mouse makes a click it is basically in a finished state, then the kernal can
+               constantly pull since it will always have data to give. 
+               - Imagine if the mouse sent an inturrupt to the CPU everytime we clicked... bumb.. so make it 
+                 a pulling I/O rather than an Inturrput.
+       2. Inturrupt I/O device:
+           - In this case we are going to inturrupt the CPU to say we are done.
+             - I.e - hardrive isn't going to be done with its work very often, with respect to constantly clicking
+               on a mouse key...
+
+     - NOW we can also break them a bit farther, byte or block device?
+       1. Byte devices  - loads byte by byte.
+           - Like a mouse where we can make every click a byte so we can pull each stroke and click quickly as a 
+             stream of data one piece at a time.
+
+       2. Block devices - load chunk at a time.
+           - Like a hardrive, don't load a file system one byte at a time, we can load it all in chunks.
+
+What else should we talk about (a fair bit less important but nice to know)
+
+  1. Port Mapped vs Memory Mapped I/O:
+     - Memory mapped keeps track of memory for each device
+     - Port is more based on message passing between the device and the memory needed
+
+     
+
