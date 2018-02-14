@@ -1,0 +1,7 @@
+When looking up these look in:
+    home/kernal/linux-hwe-4.13.0/Documentation/admin-guide/devices.txt
+
+Seems like mine are all used up to 260:
+    MAJOR:
+    261 char - PA2_simple_char_driver.c
+    
