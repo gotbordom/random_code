@@ -1,0 +1,69 @@
+LOTS of Definitions:
+
+  Syncronizaition:
+    - What happens when two processes want to access the same device.
+      - Most common are shared:
+        1. Variables
+        2. Shared Memory
+        3. Devices
+        4. 
+    - Sync is when processes are given an order for how they can gain access to the resource
+
+    - Very necessary for Concurrancy:
+  Leads to RACE conditions:
+    - Issues when we write to files at the same time... 
+
+
+  So what is a CRITICAL section - NOTES -> capitol-C usually means a critical section:
+    - Area in process / threads code - where the shared resource is actually accessed
+      - Like a global variable where everything may be writen over by other processes.
+    - This is where we need mutual exclusion
+      - basically this is for when two threads use the same C, then they cannot change the C if it isn't their C.
+      - They are here to PREVENT race conditions... so if our code is done right we don't need ME (mutual exclusion)
+    - So what should C's satisfy?
+      1. ME (mutual exlcusion
+      2. no Starvation (bounded waiting)
+      3. No deadlock
+      4. porgress must be maintained -> resource being used must be progressing... not hung
+
+  Deadlock ? 
+    - Two (or more) processes use resources that are allocated to other processes. 
+      - The common issue, is P1 wants R2. P2 wants R1. 
+        - Well until P1 gets R2 it wont release the lock on R1, and same goes for P2 with R2.
+        - This causes Them to hang waiting on the other...
+
+  So how do we force ME?
+    - We could do it the EASY way.... Disable Inturrupts
+      - This means that whichever process says disable inturrupts gets run first then start inturrupts when done
+      - PROBLEM - all other threads that don't touch the C in question, will also be stopped....
+        - Lose all efficiency damn...
+    - Anything BETTER?
+      - Yes, use locks - use flags...
+        - While flag == taken (1)
+            NoOp
+          else: run process
+      - This then says the first process to set flag to usable then only the frist one will run
+      - PROBLEM? - always...
+        - what if they both actually access the activate(flag) at the exact same time... rare.. but possible
+    Well now we have ATOMIC functions....
+      - test &set locks... which fixes issue with locks
+
+  Now SEIMAPHORES:
+    - Like a lock... but more like a lock struct
+      - Difference between this and locks?
+      - If the semaphore sees a signal where the thread is going into a NoOp looop? 
+        - The semaphore actually puts the thread to sleep with a reference,
+        - when the thread that is locking up the resource is done, the seamaphore sends a signal to wake up
+          the other process and have it run. So we aren't wasting time on a NoOp loop thread and instead another
+          thread can be running
+
+  So how is Binary SEMAPHORE different than mutex???
+    - Mutex has actual ownership over the locked resource...
+    - Semaphores don't a different process could signal to wake up the second process before P1 was even done...
+      - This allows a weird form of ordering that allows a perfect ordering of what critical section was run
+      - So if we realllly needed C1, and C2, to be run before C4 we can do that. Can't gurantee this with locks..
+
+
+
+
+ 
