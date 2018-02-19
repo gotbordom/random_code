@@ -1,0 +1,28 @@
+Looking at a bounded buffer!
+
+  - We could just lock down values, but this causes spinning locks
+
+  - Instead lets use mutex - SEMAPHORES:
+    P(mutex) - implies wait()
+      add item to buffer:
+    V(mutex) - implies signal to start process
+
+  A SEMAPHORE:
+    datatype that contains:
+    1. Value = number of tokens
+    2. Waitlist queue
+
+  If the semaphore only has 1 token then we act like a mutex:
+    - THOUGHT mutex gets spin locked using locks
+    _ WHILE semaphores put processes to sleep!!!!!
+
+  How do we track the producer / consumer?
+    - Use a SEMAPHORE such that we can track the buffer
+      - Mainly this says that the buffer has n tokens andthe semaphore value
+
+  How to signal a producer / consumer:
+   - Make the producer with WAIT using a semaphore when the buffer is full
+     - So producer will have a P(empty) semaphore that gets signaled, V(empty), in consumer
+     - Then each consumer / producer will also have a P(mutex) & V(mutex) for whatever ops they have
+     - THen the consumer also needs to WAIT P(full) when the buffer is empty.
+     - So looking at the PDF / slides there is a good visual of this 
