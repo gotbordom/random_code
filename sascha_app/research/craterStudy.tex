@@ -1,0 +1,326 @@
+\documentclass[review]{elsarticle}
+\biboptions{longnamesfirst,angle,semicolon}
+
+\usepackage{color}   % Using this for editing reasons
+\usepackage[font={small,it}]{caption}		% Not sure if this will be ok for publication - MAKE SURE TO CHECK - but I think it looks better
+
+\begin{document}
+\begin{frontmatter}
+	% Make title:
+	\title{this is a placeholder title\tnoteref{t1,t2}}
+	\tnotetext[t1]{This document is a collaborative effort.}
+	\tnotetext[t2]{This is just a second title footnote, for the sake of a place holder - remove if not needed.}
+
+	% Corresponding Author 1
+	\author[tbd1]{F.M. ~LAST1\corref{cor1}\fnref{fn1}}
+	\ead{FMLAST1@colorado.edu}
+
+	% Corresponding Author 2
+	\author[tbd2]{F.M. ~LAST2\corref{cor2}\fnref{fn1,fn3}}
+	\ead{FMLAST2@colorado.edu}
+
+	% Principal Corresponding Author 1
+	\author[art,focal]{A.R. ~Tracy\fnref{fn2}}
+	\ead{Anthony.Tracy@colorado.edu}
+
+	% Putting it all together
+	\cortext[cor1]{Corresponding author}
+	\cortext[cor2]{Principal corresponding author}
+	\fntext[fn1]{This is the specimen author footnote.}
+	\fntext[fn2]{Second footnote, this is sligtly longer of the 3.}
+	\fntext[fn3]{Last, and yet longer, there can be as many as needed but they go in order of length.}
+	\address[tbd1]{Likely LASP's address I would assume, Boulder, Colorado, 80305}
+	\address[tbd2]{Likely LASP's address I would assume, Boulder, Colorado, 80305}
+	\address[focal]{Likely LASP's address I would assume, Boulder, Colorado, 80305}
+	
+	
+	
+	% Abstract - Thought it doesn't seem to want to show-up...
+	\begin{abstract}
+		This paper reports on the effects of high velocity impacts of nano-particles onto three highly polished iridium 
+		coated tiatnium targets. Iron coated particles, of approximatly 50nm diameters, are accelerated to a varying range of velocities 
+		ranging from 3 - 50 $\frac{km}{s}$ before colliding with each target. The aim of this paper is to better understand
+		how different thicknesses of Ir react under extreame force. The result is that Ir acts as a plastic and will deform under
+		the impact. 
+	\end{abstract}
+
+	% Keywords - also not showing up...
+	\begin{keyword}
+		keyword sentence \sep keyword1 \sep keyword2	
+		% Not really sure what \PACS is - I need to read about it
+		\PACS 71.35.-y \sep 71.35.Lk \sep 71.36.+c
+	\end{keyword}
+\end{frontmatter}	
+
+	\section{Introduction}
+		The research presented by this paper has many applications. Taking space flight for example, satalites all have vital systems
+		on board that must be protected. While it can be shown that larger impacts from more hazardous material can be effectivly
+		avoided, impacts from cosmic dust is unavoidable \textcolor{red}{Should I cite someone here or is this common enough knowledge?
+		 If so who?}. Thus we need to protect against the long term effects of small fractures to 
+		a given satalite from a life time of small impacts from high velocity dust particles. Sheilding can be very heavy and a heavier
+		satalite means less space for sensors, while also increaseing the overall mission cost. This paper proposes the use of Iridium
+		for coating ceratin sensors as it will be shown that a very thin layer of Ir is all that is needed to ensure the survival of
+		the sensor for the lifetime of the mission.
+
+	\section{Methods}
+		\subsection{Materials}	
+		% How the target is made:
+		Each target was water cut from grade 2 titanium at the Physics Lab located at \textcolor{red}{(Univeristy of Colorado at 
+		Boulder?)}. Multiple target sizes were made ranging from \textcolor{red}{(what are the dimensions of each target?)}. 
+		Once the targets were cut they were sent to Cabot Microelectronics Polishing Corp (Which location?) to be polished to less
+		than 0.5 nm RMS. The targets each received an iridium deposition at varrying thicknesses of either 
+		$\frac{1}{2}\mu m$,$\frac{1}{4}\mu m$ or $1\mu m $. The dimensions for each target are shown in table \ref{tab: targetDims}, and
+		the number of recorded particles for each target are summarized in table \ref{tab: recordedParticles}.
+		
+		% Chart perhaps?
+		\textcolor{red}{(reference tables below for specs on each target made.)}
+		% Table: 1 - shows target and their dimensions
+		\begin{table}
+			\begin{center}
+				\begin{tabular}{c|c|c|c} 
+				%\hline
+				SID & Ir Thickness ($\mu m$) & Dimensions ($mm$) & Measured RMS \\ 
+				\hline 
+				??? & $\frac{1}{2}$		 & ???x???			     & ???\\
+				\hline
+				??? & $\frac{1}{4}$		 & ???x???			     & ???\\
+				\hline
+				??? & $1$		 		 & ???x???			     & ???\\
+						
+				\end{tabular}
+			\end{center}
+		\caption
+		{
+			\label{tab: targetDims}
+			Dimensions of each target.
+		}
+		\end{table}
+
+		% Table:2 - shows particles per target and their velocities
+
+		\begin{table}
+			\begin{center}
+				\begin{tabular}{c|c|c|c|c} 
+				%\hline
+				SID &  Particles at $4.5-5.5\frac{km}{s}$ & Particles at $3-50\frac{km}{s}$ & Total \\
+				\hline
+				??? &  100	& 100	& 200\\
+				\hline
+				??? &  100	& 100	& 200\\
+				\hline
+				??? &  100	& 100	& 200\\
+						
+				\end{tabular}
+			\end{center}
+		\caption
+		{
+			\label{tab: recordedParticles}
+			Summarizes the number of iron coated particles that were accelerated to within a given velocity range, then recorded impacting the targets.
+			All of the particles recorded have a diameter of 50$nm$. \textcolor{red}{are the partiles in 3-50 incluing the particles in 4.5-5.5? or should there be a total?}
+		}
+		\end{table}
+
+
+	
+		\subsection{Analysis of targets}
+		% How to scan the targets:
+		Due to the size of the dust we are looking to protect against, the largest challenge in analysing how Ir reacts to these impacts is finding the craters.
+		\textcolor{red}{what paper predicted the radius of a crater based on the velocity of a impactor?}. Cosmic dust can vary in size \textcolor{red}{how? and reference a paper about it}. 
+		Which is why we have chosen to use iron test particles with a diameter of approximatly 50nm. Given previous \textcolor{red}{ref research?} research we would expect that for
+		a particle of iron with radius 50nm, then the largest of the craters we should expect to see would be $\approx 1$ micron in diameter, meaning that we 
+		need to use an electron microscope inorder to resolve any useful features of these craters. For this we chose to use the machines located at the Nanomaterials 
+		Characterization Facility (NCF) located in the Discovery Learning Center (DLC) at the University of Colorado at Boulder. The following steps were taken to process
+		each of the targets and it was done in this order to ensure that nothing was missed or overlooked.
+
+			\subsubsection{Mapping}
+			This step is the most time consuming step in the analysis of the craters. We used the Scanning Electron Microscope (SEM2) \textcolor{red}{get the real name} to take images
+			of the target at a high enough magnitude that craters could be resovled, but at a low enough magnitude such that imaging a large section of the target could be done 
+			in a reasonable amount of time. After tuning the machine and finding the correct magnification, we were able to start a batch job which created hundreds of 
+			images a night. So that we did not have to scan the entire target, we took into account that the dust accelerator has a gaussian spread, and were then able to 
+			focus the remainder of the scanning time to four main regions covering the majority of this spread. 
+			
+			The reasoning behind doing it this way is that the SEM2 loses focus over time as it scans the target. This lose is due primaraly to human error when setting up the sample 
+			by placing the sample onto the SEM tray \textcolor{red}{I should have a better term, but for now that's what I havefor the now}. If there is even the slightest incline to how the 
+			target lies on the tray the surface of the target will rise and fall due to that incline as the batch scan occurs causeing a very noticable blur to any images 
+			taken on the nanometer scale. So rather than scanning one larger region it is better to create smaller regions that all overlap slighlty to help reduce the amount of 
+			resolution lost over time. 
+
+			\textcolor{red}{Add image of the grids made with the SEM} 
+
+			Having chosen to use a magnification of \textcolor{red}{magnification of batch jobs goes here} it took \textcolor{red}{the time it took for each batch scan} to 
+			finish each scan, from which processing all of the images took aditional time. Table \textcolor{red}{some table I haven't made yet} shows the locations of each crater
+			relative to the bottom mount hole, mount-5 as seen in figure \textcolor{red}{reference an image to the targets}, for each target.  
+
+			%\textcolor{red}{if I can get my machine learning code to work.... this would be a good place to say I wrote code to do this for me - not sure I need to bring it up though}
+
+			\textcolor{red}{for each target I should create a table of the locations that I found craters, should I create a fancy image that overlays the crater locs ontop of the target?}
+
+			\subsubsection{Energy-dispersive X-ray Spectroscopy} 
+			\textcolor{red}{I really need to clarify with Tomoko if this is EDS or EDX everyone seems to call it something different}
+			After having located, and verified, craters for each target the next step to understanding how iridium reacts to these impacts is to check these craters for any
+			signs of cracking or penetration due to the impacts. To do this we used the field-emission scanning electron microscope (FE-SEM) as it was mounted with the energy-dispersive
+			x-ray spectroscopy (EDS) sensor allowing us to scan the target for any traces of titanium.
+
+			To get a better idea of what is happening around these targets we used the EDS sensor to scan three different locations for each crater. As shown in figure
+			\textcolor{red}{add an image and reference it here - for the EDS layout}, There are two scans being done on either side of the crater and one on the inside. What 
+			we expect this to show is not only if there is traces of Ti inside the crater, but we may also see traces of Ti ejecta that would occur if the irridium was 
+			penetrated. 
+
+			\subsubsection{Heat Cycling}
+			After having checked for any damage due to impacts alone, we heat cycled the targets \textcolor{red}{verify the min and max / and for how many cycles for each target
+			may even be a good idea to jsut make a table for each of the targets}. Table \ref{tab: heatCycles} \textcolor{red}{reference the table with heat cycles} 
+			shows a summary of the heat cycles that each of the targets have undergone. 
+
+			\begin{table}
+				\begin{center}
+					\begin{tabular}{c|c|c|c}
+					%\hline
+					SID		& Minimum & Maximum & Cycles \\\hline
+					???		& -???	  & ???		& 20?	 \\\hline
+					???		& -???	  & ???		& 20?	 \\\hline
+					???		& -???	  & ???		& 20?	 \\
+
+					\end{tabular}
+				\end{center}
+			\caption
+			{
+				\label{tab: heatCycles}
+				Summary of the minimum and maximum tempuratures each target was cycled to and how many times it was cycled to between each temurature.
+			}
+			\end{table}
+
+
+			What we expect to learn from this test is how well iridium can withstand expansion and compression under continuous cycling of tempuratures, but not only how well 
+			the smooth surface reacts, more importantly, how the area around each crater reacts. We can use this test to learn if there is any long term effects from the cratering
+			of the target while in such extreame conditions. 
+
+			\textcolor{red}{From what I know, we made our own thermal cycle system. But I don't know what it was made with or if it matters to talk about it here. Also if I talk abouit it here
+			I may need to add it to the materials section above.} 
+
+			Given that irridium can usually withstand tempurature shifts of \textcolor{red}{I assume there has been material research done here, now just to find a paper on it} we can
+			focus less on how this enviroment will effect the entire target and focus primaraly on the regions around the craters. This reuires repeating the previous steps taken and 
+			returning to the SEM for further EDS scans. 
+
+			\subsubsection{Destructive Test}
+			The final step in the analysis of the targets is only done once we know that we can gather no more information from the previous steps being repeated as the final
+			test is destructive and will cause titanium to possibly contaminate any furhter EDS scans. At this point we decided to use a Focused Ion Beam (FIB) which is also located
+			at the University of Colorado at Boulder, in the NCF, which allows use to cut into the target on the nano- scale with high precicion.
+
+
+
+
+
+
+		%The next step in understanding how iridium, and gold (should I even be including the gold coated targets in this paper?), coatings hold up to the imacts is to manually scan and find as many of the craters as possible. To do this required the use of the SEM2 (Get actually name) and FE-SEM (again, get actual name) located at CU Boulder's Nanomaterials Charecterization Facility (found in the DLC, should probably get a better address). 
+		%Fortunately, with the polish, the surface of the targets should be practically smooth so that finding craters would be a fairly easy task, the main issue being that the craters are expected to be very small, about 1.6 times the diameter of the crater (This was from other research, should reference it and look up actual number... think it's 1.6). This means that if the particle is about 50 nm in diameter then the crater should look like a small black dot with a bright white ring around it at a diameter of 80nm (that doesn't sound right.. especially with the results I have. I think I have the wrong size of the dust particles written here.).
+		%The process for finding the craters is to use the SEM2 which is able to run batch scans, in a zigzag pattern (as shown below? could add a visual), at a magnification of x4k (I should double check this number as well) to create a grid of images which can be manually looked through for craters. At this magnification it should be possible to see all ranges of craters from a radius of 50nm to 500nm (I should go back and correct everything to radius not diameter) as the area being shown in each image is 31.8um by 23.8um. In these images it would be expected that the smaller side of craters, 50-100 nm in radius, would be bright specs with dark black centers that are only a few pixles in diameter and the larger craters, 300 to 500 nm in radius, would be 100 to 200 pixles in diameter (this is currently a guess, but I should work out the math given I know the image pixel size).
+		%Given that the beam width used was (I Need to ask about this), it gave us a more refined search area which helps reduce the amount of time it takes to find craters.
+		%\subsection{Energy-dispersive X-ray spectroscopy} 
+		%Having found the crater locations on the target, the sample was moved into the FE-SEM inorder to run an Energy-dispersive X-ray spectroscopy scan, EDS for short, which would indicate if there was an traces of titanium in, or around, the craters. What this would show is that either the dust particle was able to penitrate the polished coating, or that the chosen thickness was still intact after the impact. To scan each crater we used a point and shoot method that allowed for a focused beam (of what size? I need to ask Tomoko about this). Taking three scans, which can be seen in figure (??), it is possible to if there are any major changes to the chemistry of the area around, and in, the craters. The main indicators to look for would be if there is any titanium showing up in either of the three spectra, or if there was a sudden change between any of the three (Could probably talk about how these could occur? Though I am not positive as to how the spectra would be significanty different and it isn't due to titanium showing up). This step is primarally to see if there are any instant effects from the dust particle imapcint the target, the next question is could there be lasting effects. To test this we heat cycle the target to see if large changes in tempurature may cause cracking, or any other imperfections, due to the impact.
+		%\subsection{Heat Cycling}
+		%To heat cycle we (I only know that there is a box made and it gets hot, and I assume cold? I need to ask Alan).
+		
+		%\subsection{Re-imageing and EDS}
+		%Once the heat cycle is complete, we put the targets back in the SEM and check the crater locations. Looking for any new signs of cracking, flacking, or any other imperfections that could have occured around the craters. (I am not sure how if there is any other reason for heat cycling).
+		
+		
+		%\subsection{Ask Tomoko what this was called - Cutting a section of target out}
+		%The final test to make sure how the impact effected the coatings is to cut a section of the crater out of the target and scan a side view of the removed section allowing us to actually look at the layers. (Have yet to do this so this section is unknown fully to me).
+
+
+
+
+
+
+%%%%%%% This likely fits better in results...
+%The largest issue with this method is the amount of time it takes to scan even a small 1mm x 1mm region. At this magnification the SEM will only scan a region of 31.8um x 23.8um with a 1 minute scan time, creating about 990 images per grid, takes about 16.5 hours per batch scan (This isn't exactly correct, it takes longer I will have to look at the scan setting becasue the images I made took a little over a minute to create). 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%% Below here is probably going to be deleted, currently just referencing it...
+
+%------------------------------- To be deleted, likely ----------
+%			% How many samples were made and tested?
+%			
+%			
+%			% How was each sample made?
+%			% Is the Physics shop the shop on CU campus? if not, which one and where?
+%			% Might also want to clarify that rms is meant as root mean square?
+%			Each sample was made by water cutting grade 2 titanium at the Physics shop (Is this CU Boulder's Physics shop?). 
+%			The samples were then sent to Cabot Microelectronics Polishing Corp to be polished to less than 0.5 nm rms. 			
+%			% How did we know that these were actually polished this well?
+%			Inorder to verify that these samples were infact polished to such a scale, we ...			
+%			% Did every sample have particle impacts with velocities ranging from 4.5 - 5.5 km/s?
+%			The next step was to shoot each sample with a number of dust particles. 
+%			These particles were accelerated using the dust accelerator location at the Dust Lab at the Univeristy of Colorado at Boulder. 
+%			The dust particles were $\approx 0.5$ nm in diameter and accelerated to velocities within the ranges of 4.5 to 5.5 $\frac{km}{s}$.
+%			
+%			% Should I talk about how the accelerator works? I don't think I would need to.
+%			
+%			% Show a list of all targets:
+%			Table \ref{ListOfSamples} shows each sample that was made, the dimensions, how thick a coating of iridium was placed on it, how many imacts were detected on the sample, and if the sample had fiducial markings added or not.
+%			% This table needs to be formatted better, center it better. 
+%			\begin{table}[h]
+%			\centering			
+%			\begin{tabular}{|c|c|c|c|c|}
+%			\hline
+%			Sample 	& Dimensions & Coating Thickness (nm) & \# of Detected Impacts  & Fiducial Markings\\
+%			\hline
+%			X07		& ---		 & $\frac{1}{4}$		  & 100						& Yes	\\
+%			\hline
+%			X17		& ---		 & $\frac{1}{2}$		  & 30 (so far?)			& No	\\
+%			\hline
+%			\end{tabular}
+%			\caption
+%			{
+%				\label{ListOfSamples}
+%				List of samples created.
+%			}
+%			\end{table}
+%			
+%			
+%		\subsection{Scanning for Craters}
+%		Each target had to be individually scanned in a scanning electron microscope inorder to acheive an effective resolution for veiwing these craters.
+%		Once a crater was found, then the task would be to create a higher resolution image, measure the radius of the crater, and then take an energy-dispersive X-ray spectroscopy scan of the crater, EDS for short. 
+%		All of this was done using secondary electrons on a Hitatchi, (Get full machine name), at the Nanomaterials Charecterization Facility (NCF) location at the University of Colorado at Boulder except the EDS scan.
+%		The EDS scans were taken using the field emission SEM, or FE-SEM. % Get the real mahcine name
+%		To find each crater required using a magnification of 4000, accelerating voltage of 10kV, a working distance of 4.9mm, and a spot intensity of 20.
+%		% Get exact surface area from notes:
+%		Using the batch mode to create images, it was possible to scan a surface area of 30x20  mm
+		
+
+ 
+	\section{Results}
+		
+	\section{Conclusion}
+	
+	
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		% Notes						%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{\textcolor{red}{Things to think about / remember to correct}}
+		\textcolor{red}{
+			\begin{enumerate}
+				\item Check on how I typed iridum, I chould probably not intercahnge Ir and irridium. I should also make sure it isn't always capitolized
+			\end{enumerate}
+		}
+
+	
+	
+	% Example of graphics:
+	% Just use \includegraphics[scale=•]{•} as usual
+	
+	
+\end{document}
