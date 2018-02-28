@@ -1,0 +1,100 @@
+Device Drivers:
+  1. status bits that tell us what we are in:
+     - busy
+     - done
+     - idle
+  2. How do we communicate:
+     - interact with:
+       - commands, data, status
+
+  3. What is the difference bettween Port and Memory IO?
+     - Only OS can access Port registers at specific memory locations
+     - that memmory is mapped into kernal?
+
+  4. What are 3 I/O strats?
+     - Direct I/O polling
+       - CPU waits till device is idle
+       - CPU issues command
+       - CPU is idle waiting and pinging till data is returned
+     - Direct with interupts:
+       - no idle, just tells device to ping CPU when done
+     - DMA (Direct Memory Access) with inturrupts:
+       - Large memory trasnfer without CPU contact
+         - Bad... CPU can't touch that memroy location while it is being used...
+
+  5. How do we write info when in a sys code:
+     - printk() this prints to logs
+  
+  6. How to look at these messages?
+     - dmesg
+
+  7. How do we copy to/from user sapce within OS
+     - copy_to_user()
+     - copy_from_user()
+
+So moving forward:
+
+  1. Device Drivers are broken into 2 peices:
+     - Device independant: 
+       - Abstraction of device commands:
+         - API for generic conversation with devices
+       - WHat happens when we make a function call?
+         - Make a trap call that contains DEVICE IDs
+           - These are Major & Minor, Major is umbrella term for the brand
+
+     - Device dependant: 
+
+  2. S0 how do we add new devices? - LKM (Loadable Kernal Moduals)
+     - Make the device code like it were a library
+       - Meaning that when we end up needing the device driver we can load it
+
+
+  3. So this means all we need is a way to load and install device drivers..
+     - want to see them? lsmod || /lib/modules
+     - or more /proc/moduels
+
+
+  4. So how do we make a LKM?
+     - Use a make file to create one! <- woooo learning make files
+    
+
+  5. What device driver types are there?
+     - well we either can get data a char at a time (char device driver)
+     - or we can get a block at a time              (block device driver)
+
+  6. So how do we look for the device drivers that we made?
+     - ls /dev <- it will be in this list
+
+Yay writing kernal modules:
+  1. writen in c 
+  
+  2. Need source code for kernal
+
+  3. Must use the kernal that the modul was writen for
+
+  4. so they must all be similar thus they must all have;
+     - int init_module(void)
+       - return 0 if all goes well else -1
+     - void cleanup_module(void)
+  
+  5. loading a module :
+     - sudo insmod helloworld.ko
+  6. Other commands to know are on slides:
+     - rmmod
+     - lsmod
+     - modinfo
+
+
+So why do we care?
+  1. Reconfigureable device drivers?
+     - well we don't recompile OS for everry new driver
+     - plug-n-play functinality
+     - `
+
+So what is next?
+  1. /proc directory?
+     - the proc file system:
+     
+     - contains the virtual file aside from other binary files
+
+     - ls /proc/ide  

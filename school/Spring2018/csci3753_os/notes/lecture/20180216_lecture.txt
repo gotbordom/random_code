@@ -1,0 +1,111 @@
+SEMAPHORES:
+
+typedef struct {
+
+  int value;
+  PID *list[];
+
+} semaphore;
+
+
+These allow use to build Mutual exclusion in a better way...
+
+  - i.e - semaphore S = 1; // Implies a Binary semaphore setup
+
+  - if we want a different setup (not BINARY) then we choose a different number
+
+  - PROBLEMS?
+    - Yes, what if we have multiple semiphores?
+      - We can get DEADLOCK if we have circular dependance
+        which means that if one stays locked until something the second has returns, 
+        but then the second is locked until the first frees up? ... well they 
+        are now both locked.
+
+
+
+Preemtive and non-preemtive kernels:
+  - Preemptive: allows process to be preemptive thus RACE Conditions can occur
+
+  - Nonpreemptive: RACE conditions cannot occur on a single process, BUT they can occur on a multiprocessor..
+
+
+Classical problems?
+  1. Bounded-Buffer Problems - Producer/Consumer problem
+     - Could be a like a circular buffer.
+       - Producer adds to buffer, and Consumer removes
+       - Check for two things, 
+         1. Is buffer full? don't add
+         2. Is buffer empty? don't take
+
+  2. Readers and Writers Problem
+     - Allow readers as much as we want, but keep writers out
+       - But if there is a constant flow of readers? well we 'starve' the writer..
+         - So to resolve this, say if a writer is waiting then have all NEW readers wait and 
+           let old readers finish then write.
+       - Only 1 writer at a time
+         - If you can KNOW that the writers will be writing different locations then ok let them, but
+           much easier (safer) to only let 1 writer at a time
+
+  3. Dining-Philosophers Problem
+     - Easy to cause startvation to other user's / resources since if one philosiper needs food
+       
+
+Assignment number 3: Threads
+  The problem: We have a process wanting to talk with google:
+    - The user types google.com
+    - The computer talks in IP addresses....
+    
+  - We will have incoming File names:
+    - We will have Requestor thread pools with multiple threads writing to the same serviced file
+      - We need a lock shystem.
+    - So for the shared memory we will need a lock system 
+
+  How do we do this?
+    - Thread library
+    -  Two implimentations usually:
+       1. Implimented in kernal
+       2. Or user
+
+  How to create threads?
+    - pthread_create(thread,attr,start_routine)
+    - Use fork / exec to make new threads,
+    - Use pthread_join(thread,NULL) - inorder to combine finished thread back to old thread
+    - use pthread_exit() to finish any thread, so we know when they are done
+    - Critical sections use othread_mutex_t m; // makes the mutex
+      - Then pthread_mutex_init (&m,NULL) // initiates the mutex
+  Mutexs - 
+  - Two states: LOCKED & UNLOCKED
+  - ONLY the thread that LOCKED can UNLOCK
+
+  - So use them only for mutual exclusion not signaling
+    - So we need SEMIPHORES for signaling with threads:
+      - sem_init()
+      - int sem_wait()
+      - int sem_post()
+      - sem_getvalue()
+      - sem_close()
+
+  What is a threadpool?
+  - Might be nice to have some preallocated - slightly faster than having to create the thread
+  - ADVANTAGES:
+    - We can bound how many things get done...
+      - This is called LOAD BALANCING
+  Thread safety:
+  - Threads don't crash other threads
+    - Heap / code / global variables / stack
+      - Must keep these all safe without things being written over - make sure to hva locks where we need them
+  - How?
+    - Serialize the function:
+    - Lock critical section:
+      - Easy section - make the thread lock everything, then unlock when done:
+        - though this slows the system down... bad...
+  - Avoid globals and statics... if we don't have any we don't need a mutex (Lock)
+
+
+  USING signal handeling in multithreading? - DON'T ... it's a pain...
+  -  
+
+
+
+
+
