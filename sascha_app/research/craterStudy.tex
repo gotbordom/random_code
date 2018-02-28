@@ -204,7 +204,76 @@
 			\subsubsection{Destructive Test}
 			The final step in the analysis of the targets is only done once we know that we can gather no more information from the previous steps being repeated as the final
 			test is destructive and will cause titanium to possibly contaminate any furhter EDS scans. At this point we decided to use a Focused Ion Beam (FIB) which is also located
-			at the University of Colorado at Boulder, in the NCF, which allows use to cut into the target on the nano- scale with high precicion.
+			at the University of Colorado at Boulder, in the NCF, which allows use to cut into the target on the nano- scale with high precicion. 
+
+			For this test, we made sure to follow a procedure very closly as any small mistake may lead to an unrecoverable error. The following procedure was used, where the steps will be
+			explained after.
+			\begin{enumerate}
+				\item {Find the crater, center the FIB, tilt the stage by 52$^{\circ}$ and recenter the FIB to the crater as seen in figure \textcolor{red}{reference and add an image}}
+				\item {Use the FIB controls to highlight a square region surrounding the crater as seen in figure \textcolor{red}{ref image}}
+				\item {Apply a thin layer of a material with a much smaller atomic number, in this case we used a \textcolor{red}{0.2nm?}$SiO_2$, as shown in figure \textcolor{red}{ref image}}
+				\item {Apply another thin layer of a similar atomic number, for this we used \textcolor{red}{I need to look in my notes, also how much and add image and ref}}
+				\item {Using FIB software reduce the chosen grid's dimensions. Allow one dimension to remain the same, while setting the other to be less than $\frac{1}{2}$, we used 
+						\textcolor{red}{I need to look this up}}
+				\item {Choose the step pattern and select a depth to cut to, we chose to use \textcolor{red}{cut depth}}
+				\item {Continue to increase the variable dimension by a chosen step size until the measurable depth of the crater reaches a maximum and begins to decrease}
+			\end{enumerate}
+			
+			The reason that we applied two thin layers of different materials is to conserve the structure of the crater we are trying to analyze. The heavier material 
+			\textcolor{red}{I need to look} is for purpose of keeping any sputtered material from impacting the crater. However irridium has a large atomic number, and since 
+			we needed to protect it with another material with a high atomic number, we need something between them for contrast otherwise they would seem to be the same material 
+			when scanned by an SEM. This is where the $SiO_2$ is important, it can really be anything so long as the the atomic number is lower and there are no material properties that
+			may cause an issue when trying to scan the target \textcolor{red}{due to conductivity? do I need to / care to talk about that?}. This contrast can be seen in figure 
+			\textcolor{red}{reference the same image as in procedure and explain it here}. 
+
+			It is also important to make sure to start the variable dimension much smaller that its initial size, to help avoid cutting to far into the crater from the start. While the 
+			reason for the 52$^\circ$, and the step cut are to make seeing a clean surface area of the crater possible. Figure \textcolor{red}{make a nice diagram of the step patter,
+			then even maybe add some quick math to explain how the (cs) measurements are made.} 
+
+			This step of the analysis is critical, it is where we really expect to be able to learn if the irridium is actually acting as a plastic under the force of the impact or not. 
+			As will be discussed further in the results, the images show us that even in the worst case the irridium is acting as a plastic, deforming and even visibly denting the titanium 
+			below. 
+
+
+		\subsection{Data Processing}
+		Having collected thousands of images, the main data processing came from the EDS images, spectrums, and from the FIB images. 
+
+		\textcolor{red}{How do I analyze the spectrum, I know that the EDS software does a lot for me but is there more to it, and should I explain what the software is going?}
+		\textcolor{red}{lookup all of the measurements I have gotten, find the volume displaced by the impact, compare that to the walls of the crater and check if 
+						mass was conserved - acted like a plastic}
+		\textcolor{red}{Look into creating a 3D rendering of the impact craters? - I have a paper on this I think, if not ask Sascha for the paper he mentioned}
+
+
+
+ 
+	\section{Results}
+		
+
+
+
+	\section{Conclusion}
+
+
+
+
+	
+	
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		% Notes						%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{\textcolor{red}{Things to think about / remember to correct}}
+		\textcolor{red}{
+			\begin{enumerate}
+				\item Check on how I typed iridum, I chould probably not intercahnge Ir and irridium. I should also make sure it isn't always capitolized
+			\end{enumerate}
+		}
+
+	
+	
+	% Example of graphics:
+	% Just use \includegraphics[scale=•]{•} as usual
+
+
 
 
 
@@ -300,27 +369,6 @@
 %		% Get exact surface area from notes:
 %		Using the batch mode to create images, it was possible to scan a surface area of 30x20  mm
 		
-
- 
-	\section{Results}
-		
-	\section{Conclusion}
-	
-	
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		% Notes						%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	\section{\textcolor{red}{Things to think about / remember to correct}}
-		\textcolor{red}{
-			\begin{enumerate}
-				\item Check on how I typed iridum, I chould probably not intercahnge Ir and irridium. I should also make sure it isn't always capitolized
-			\end{enumerate}
-		}
-
-	
-	
-	% Example of graphics:
-	% Just use \includegraphics[scale=•]{•} as usual
 	
 	
 \end{document}
