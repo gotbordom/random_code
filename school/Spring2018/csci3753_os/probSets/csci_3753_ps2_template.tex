@@ -1,0 +1,80 @@
+\documentclass[12pt]{article}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{\baselineskip}
+
+\usepackage{amsmath,amsfonts,amssymb,qtree,graphicx}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{fancyvrb}
+\usepackage{proof}
+
+\pagestyle{fancy}
+\title{CSCI 3753 Problem Set 2}
+
+\begin{document}
+
+\lhead{{\bf CSCI 3753 \\ Problem Set 2} }
+\rhead{{\bf Anthony Tracy \\Spring 2018, CU-Boulder}}
+
+\textbf{\textit{RECITATION: Friday 11-11:45}}\\
+\textbf{\textit{NUMBER OF HOURS TO COMPLETE PS: Need to fill in still}}
+
+% PROBLEM 1
+\begin{enumerate}
+\item{\textit{(10 pt) Describe and explain each of the following (use examples):}}
+\begin{enumerate}
+\item{\textit{The concept of interleaving instructions of two threads}}
+\item{\textit{Each of the requirements for deadlock (give examples). Explain why the first three are necessary but not sufficient for deadlock.}}
+\end{enumerate}
+
+% PROBLEM 2
+\item{\textit{(10 pt) Compare and contrast the following (make sure to define each of the items):}}
+\begin{enumerate}
+\item{\textit{Mode switch vs process switch}}
+\item{\textit{Semaphore vs conditional variable}}
+\end{enumerate}
+
+% PROBLEM 3
+\item{\textit{(20 pt) Given the code below answer the following questions (explain your reasoning):}}
+\begin{small}
+\begin{Verbatim}[xleftmargin=5mm]
+int temp;
+void swap(int *y, int *z)
+{
+    int local;
+    local = temp;
+    temp = *y;
+    *y = *z;
+    *z = temp;
+    temp = local;
+}
+\end{Verbatim}
+\end{small}
+\begin{enumerate}
+\item{\textit{Is the function thread safe?}}
+\item{\textit{Is the function reentrant?}}
+\end{enumerate}
+
+% PROBLEM 4
+\item{\textit{(30 pt) Barrier Synchronization: A \textbf{barrier} is a tool for synchronizing the activity of a number of threads. When a thread reaches a \textbf{barrier point}, it cannot proceed until other threads have reached this point as well. When the last thread reaches the barrier point, all threads are released and can resume concurrent execution. 
+You have a number of threads processing data and each piece of data takes a different amount of time to process. When a thread has completed its processing, it will ask for more work. However, the data requires that 4 workers all start together on the next 4 pieces of data. This means we want to gather 4 threads before having them begin processing. 
+Please provide a solution (pseudocode), explain how it works, show that it is starvation free and deadlock free.}}
+
+% PROBLEM 5
+\item{\textit{(30 pt) CU wants to show off how politically correct it is by applying the U.S. Supreme
+Court’s “Separate but equal is inherently unequal” doctrine to gender, ending its
+long-standing practice of gender-segregated bathrooms on campus. However, as a
+concession to tradition, it decrees that when a woman is in the bathroom, other women
+may enter, but no men, and vice versa. Also, due to fire code, at most N (N > 1)
+individuals may use the bathroom at any time. Your task is to write two functions:
+\texttt{man\_use\_bathroom()} and \texttt{woman\_use\_bathroom()}. Provide a monitor-based solution
+that manages access to the bathroom. Your solution should be fair, starvation free and
+deadlock free.}}
+\end{enumerate}
+\newpage
+
+\textbf{\textit{Resources:}}
+\end{document}
