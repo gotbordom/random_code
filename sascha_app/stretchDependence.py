@@ -3,7 +3,7 @@
 # Description: This is a function that is basically a look up table. If the value is between two knowns, interpolate.
 # NOTE: I am using a whitespace of 2 spaces.
 
-import argparse
+import sys
 
 def interp2d(data,z,x):
   # Inputs:
@@ -42,7 +42,7 @@ def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of V
   # This is just the hard coded data that will be used to interpolate the other possible input data points.
   # Make sure that the input is within the region of known data:
   assert(volt <= 2900 and volt >= 2500),"The input voltage, %f, is outside the known dataset. It must be between 2500 and 2900" % (volt)
-  assert(impact <= 104.2 and impact >= 53.8),"The input impact location, %f, is outside the known dataset. It must be between 52.8 and 104.2" % (impact)
+  assert(impact <= 104.2 and impact >= 52.8),"The input impact location, %f, is outside the known dataset. It must be between 52.8 and 104.2" % (impact)
   volts = [2500,2500,2500,2600,2600,2600,\
 	       2685,2685,2685,2700,2700,2700,\
 	       2800,2800,2800,2900,2900,2900]
@@ -52,9 +52,6 @@ def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of V
 
   stretch = [950,908,883,888,856,826,837,815,788,837,769,740,796,769,740,759,734,707]
   mydict = {}
-
-  #volt = round(volt)
-  #impact = round(impact)
 
   for i in range(len(stretch)):
     mydict[(volts[i],locs[i])]=stretch[i]
@@ -69,21 +66,9 @@ def stretchDep(volt,impact):     # Incase it isn't clear, input is in units of V
     z = [mydict[low],mydict[low[0],high[1]],mydict[high[0],low[1]],mydict[high]]
     return interp2d(data,z,(volt,impact))	# Currently zero for false, as I have yet to do this part...
 
-# Use the above functions plus terminal arguments to evaluate a given voltage and distance:
-ap = argparse.ArgumentParser()
-ap.add_argument("-v",
-				required=True,
-				type=float,
-				help="The voltage to be used. Between 2500 and 2900 (mAs?)")
-ap.add_argument("-x",
-                required=True,
-                type=float,
-                help="The impact location to be used. Between 52.8 and 104.2 (mm)")
-args = ap.parse_args()
+# Run the script
+# print stretchDep(float(sys.argv[1]),float(sys.argv[2]))
+sys.stdout.write('{0}\n'.format(stretchDep(float(sys.argv[1]),float(sys.argv[2]))))
 
-# Run the functions
-print stretchDep(args.v,args.x)
-
-
-
-
+#def main():
+#  return stretchDep(float(sys.argv[1]),float(sys.argv[2]))
