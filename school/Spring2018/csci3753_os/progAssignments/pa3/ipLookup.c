@@ -1,6 +1,10 @@
 #include<stdio.h>
 #include<pthread.h>
 
+MODULE_LICENSE("GPL");  // Not sure I reallllly need this for class but hey why not.
+MODULE_AUTHOR("Anthony Tracy");
+MODULE_DESCRIPTION("OS PA3: writing a script to create threads and loopup ip addresses");
+MODULE_VERSION("0.1");
 
 // Things that could go in a header:
 void *producers(); // What the producer threads will call
