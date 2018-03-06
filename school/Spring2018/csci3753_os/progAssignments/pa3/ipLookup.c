@@ -1,19 +1,23 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<pthread.h>
+#include<ipLookup.h>
 
 MODULE_LICENSE("GPL");  // Not sure I reallllly need this for class but hey why not.
 MODULE_AUTHOR("Anthony Tracy");
 MODULE_DESCRIPTION("OS PA3: writing a script to create threads and loopup ip addresses");
 MODULE_VERSION("0.1");
 
-// Things that could go in a header:
+/* Added the below stuff to a  header.. */
+
+/*
 void *producers(); // What the producer threads will call
 void *consumers(); // What the consumer threads will call
 void wait(struct semaphore *S);
 void signal(struct semaphore *S);
 void init_semaphore(semaphore *S,int n,int buffer);
 void dest_semaphore(semaphore *S)
-
+*/
 
 
 
@@ -47,17 +51,17 @@ void signal(semaphore *S){
   S->value++;
   // Now if anyone is waiting wake them up:
   p = S->list[0];
-  if(S-> <=0){
+  if(S->value<=0){
     // Requires removing a process - not sure how to do this.....
     wakeup(p);
   }//end if
 }//end sig
 
-void init_semaphore(semaphore *S,int ni,int buffer){
+void init_semaphore(semaphore *S,int n,int buffer){
   S->value=n;
   // for testing:
   printf("semaphore has been made with value: %d \n",n);
-  S->list=malloc(sizeof(struct process)*buffer)
+  S->list=malloc(sizeof(char)*buffer);
 }//end init
 
 
@@ -71,7 +75,7 @@ void dest_semaphore(semaphore *S){
 
 void *producer(){
   // stuff to do with producer
-  printf("Look I'm a producer!\n")
+  printf("Look I'm a producer!\n");
   pthread_exit(0);
 }
 
@@ -82,12 +86,12 @@ void *producer(){
 
 void *consumer(){
   // Stuff to do with consumer....
-  printf("Look I'm a consumer!\n")
+  printf("Look I'm a consumer!\n");
   pthread_exit(0);
 }
   
 /*----------------------Main process begins----------------------------*/
-int main(argc,char *argv[]){
+int main(int argc,char *argv[]){
   /* Makeing just one producer and one consumer thread for now */
   pthread_t tid;
   pthread_attr_t attr; /* use default attrs */
@@ -96,10 +100,10 @@ int main(argc,char *argv[]){
 
   /* actually make the producer thread */
   pthread_attr_init(&attr);
-  pthread_create(%tid,&attr,producer,argv[1])
+  pthread_create(&tid,&attr,producer,argv[1]);
   
   /* create the consumer*/
-  pthread_create(%tid,&attr,consumer)
+  pthread_create(&tid,&attr,consumer);
   
   /* later the above should create a producer & consumer pool */
   
