@@ -120,7 +120,7 @@ char *front(queue *q){
     return NULL;
   }
   else{
-    printf("Made it this far\n");
+    //printf("Made it this far\n"); // Fixed this bug... turns out it had nothing to do with this..
     return (q->string[q->head]); 
   }
 }
