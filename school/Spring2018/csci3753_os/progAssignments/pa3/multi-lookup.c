@@ -96,6 +96,7 @@ void dequeue(queue *q){
     q->head++;
     if(q->head==q->max){ // Make it a circular queue
       q->head=0;
+    
     }
   }
   return;
@@ -109,6 +110,7 @@ void enqueue(queue *q,char *element){
     q->full=1;
   }
   else{
+    q->string[q->head]=element;
     q->items++;
     q->tail++;
     if(q->tail==q->max){
@@ -140,7 +142,7 @@ int main(){//int argc,char argv[]){
   size_t nread;
 
   /* Testing my queue, should throw a lot of "Queue is full"...*/
-  queue *q = queueInit(25);
+  queue *q = queueInit(5);
 
   fHandle=fopen("input/names1.txt","r");
   if(fHandle) {
