@@ -85,40 +85,33 @@ void queueDelete(queue *q){
 }
 
 void dequeue(queue *q){
-  /* Make sure queue isn't empty */
-  if(q->items==0){
+  q->items--;          // decrease length of queue
+  q->head++;           // May be considered bad practice... but don't actually delete just move
+  if(q->head==q->max){ // Make it a circular queue
+    q->head=0;
+  }
+  if(q->tail==q->head){ // Head met tail, we are empty
     printf("Queue is empty.\n");
     q->empty=1;
-    q->full=0;
   }
-  else{
-    q->items--;
-    q->head++;
-    if(q->head==q->max){ // Make it a circular queue
-      q->head=0;
-    
-    }
-  }
-  return;
+  q->full=0;            // We can't be full if we just dequeued
+return;
 }
 
 void enqueue(queue *q,char *element){
-  /* Make sure queue isn't full */
-  if(q->items==q->max){
+  q->string[q->head]=element; // Add string pointer to queue
+  q->items++;                 // queue length +1
+  q->tail++;                  // Move tail location +1
+  if(q->tail==q->max){        // Make sure to have circular queue
+    q->tail=0;
+  }
+  if(q->tail==q->head){       // Check when full
     printf("Queue is full.\n");
-    q->empty=0;
     q->full=1;
   }
-  else{
-    q->string[q->head]=element;
-    q->items++;
-    q->tail++;
-    if(q->tail==q->max){
-      q->tail=0;
-    }
-  }
-  return;
-}
+  q->empty=0;                 // Can't be empty if we just added
+return;
+}//End of Enqueue
 
 char *front(queue *q){
   /* Make sure that the queue isn't empty */
