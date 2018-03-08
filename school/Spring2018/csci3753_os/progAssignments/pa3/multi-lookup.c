@@ -126,7 +126,8 @@ char *front(queue *q){
 }
 
 
-/* ------------Main Funciton----------------- */
+/* ------------Main Funciton(Testing Queue)----------------- */
+/*
 int main(){//int argc,char argv[]){
 
   char buff[256];
@@ -134,7 +135,7 @@ int main(){//int argc,char argv[]){
   FILE *fHandle;
   size_t nread;
 
-  /* Testing my queue, should throw a lot of "Queue is full"...*/
+  // Testing my queue, should throw a lot of "Queue is full"...
   queue *q = queueInit(5);
 
   fHandle=fopen("input/names1.txt","r");
@@ -161,3 +162,8 @@ int main(){//int argc,char argv[]){
   fclose(fHandle);
   queueDelete(q);
 }
+*/
+
+
+/* -------------------Main Function(adding prod)----------- */
+
