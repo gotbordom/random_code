@@ -45,14 +45,43 @@ typedef struct{
 } queue;
 
 
+typedef struct{
+  queue *q;         // Also need to pass the shared q to all threads
+  char *fName;      // pointer to a string - the filename to read
+  int size;         // want the number of files to be read
+  int *isComplete;  // Are the files done being read or not (1) true (0) false - bit map would save space...
+} pData;
+
+
 /* Queues */
+pData *pDataInit(queue *q,int size,char *files);
+pData pDataDelete(pData *p);
+
 queue *queueInit(int size);
 void queueDelete(queue *q);
 void enqueue(queue *q, char *element);
 void dequeue(queue *q);
 char *front(queue *q);
 
+
+
 /* ------------Methods----------------------- */
+
+// pData methods:
+pData *pDataInit(queue *q, int size,char *files){
+  pData *p;
+  p = (pData *)malloc(sizeof(pData));
+  p->fName = files;
+  p->isComplete = (int *)malloc(sizeof(int)*size);
+  p->size=size;
+  return p;
+}
+void pDataDelete(pData *p){
+ free(isComplete);
+ free(p);
+}
+
+// queue methods:
 queue *queueInit(int size){
   queue *q;
   q = (queue *)malloc(sizeof(queue));
@@ -126,6 +155,57 @@ char *front(queue *q){
 }
 
 
+
+/* Producer: */
+
+void *producer(void *p){
+  /* Testing with a string-filename */
+  char buff[256];                       // Make a buffer to write things too...
+  FILE *fHandle;                        // Make a file handler for input files
+  
+
+  fHandle = fopen(fName,"r");  // Read the file from the location of fName pointer
+  if(fHandle){
+    while(fgets(buff,256,fHandle)!=NULL){
+      printf("PID: %lu read: %s\n",pthread_self(),buff);
+    }//End while
+  }//End if handle loaded correctly
+  return NULL;
+}// End producer
+
+
+/* Consumer */
+
+
+/* -----------------Main--------------------------------- */ 
+
+int main(){
+ 
+  char fileName[256]="input/names1.txt";
+  pthread_t prod0;
+
+  printf("fName: %s\n",fileName);
+  /* Create pthread, check that it makes correctly */
+  if(pthread_create(&prod0,NULL,producer,&fileName)){
+    fprintf(stderr,"Error making pthread\n");
+    return 1;
+  }
+  /* Wait for thread to complete correctly*/
+  if(pthread_join(prod0,NULL)){
+    fprintf(stderr,"Error joining.\n");
+    return 2;
+  }
+  return 0;
+}//End of main
+
+
+
+
+
+
+
+
+/* ------------Old code and notes--------------------------- */
 /* ------------Main Funciton(Testing Queue)----------------- */
 /*
 int main(){//int argc,char argv[]){
@@ -163,7 +243,3 @@ int main(){//int argc,char argv[]){
   queueDelete(q);
 }
 */
-
-
-/* -------------------Main Function(adding prod)----------- */
-
