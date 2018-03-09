@@ -171,8 +171,14 @@ void *producer(void *p){
     while(fgets(buff,256,fH)!=NULL){
       printf("PID: %lu read: %s\n",pthread_self(),buff);
       /* Now add to the queue */
-      
-
+      printf("isFull: %d\n",pShared->q->empty);
+      if(!(pShared->q->full)){
+        printf("Trying an Add.\n");
+        enqueue(pShared->q,buff);
+      }//End of if queue is full
+      else{
+        printf("Queue is full.\n");
+      }
     }//End while
   }//End if handle loaded correctly
   return NULL;
@@ -219,10 +225,13 @@ int main(int argc,char *argv[]){
     fprintf(stderr,"Error joining.\n");
     return 2;
   }
+  
+  /* Testing my producer */
+  printf("Top: %s\n",front(p->q));
 
   /* Clean up */
   queueDelete(q);
-  //free(fName);
+  pDataDelete(p);
   return 0;
 }//End of main
 
