@@ -55,7 +55,7 @@ typedef struct{
 
 /* Queues */
 pData *pDataInit(queue *q,int size,char *files);
-pData pDataDelete(pData *p);
+void pDataDelete(pData *p);
 
 queue *queueInit(int size);
 void queueDelete(queue *q);
@@ -77,7 +77,7 @@ pData *pDataInit(queue *q, int size,char *files){
   return p;
 }
 void pDataDelete(pData *p){
- free(isComplete);
+ free(p->isComplete);
  free(p);
 }
 
@@ -158,7 +158,7 @@ char *front(queue *q){
 
 /* Producer: */
 
-void *producer(void *p){
+void *producer(void *fName){
   /* Testing with a string-filename */
   char buff[256];                       // Make a buffer to write things too...
   FILE *fHandle;                        // Make a file handler for input files
@@ -179,10 +179,19 @@ void *producer(void *p){
 
 /* -----------------Main--------------------------------- */ 
 
-int main(){
+int main(int argc,char *argv[]){
  
   char fileName[256]="input/names1.txt";
+  //char *files[argc]=argv;
+  /* Create array of filenames */
+  //char *fName = (char *)malloc(sizeof(char*)*(argc-1));
+  //for(int i=0; i<argc; i++){
+  //  fName[i]=&argv[i+1];
+  //}
+
+  //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
   pthread_t prod0;
+  pthread_t cons0;
 
   printf("fName: %s\n",fileName);
   /* Create pthread, check that it makes correctly */
@@ -195,6 +204,8 @@ int main(){
     fprintf(stderr,"Error joining.\n");
     return 2;
   }
+
+  free(fName);
   return 0;
 }//End of main
 
