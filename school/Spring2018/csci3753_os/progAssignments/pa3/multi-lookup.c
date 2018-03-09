@@ -190,8 +190,16 @@ int main(int argc,char *argv[]){
   //}
 
   //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
+  int numProd = 5;
+
   pthread_t prod0;
   pthread_t cons0;
+
+
+  /* Create dataset for producer */
+  queue *q = queueInit(numProd);
+  pData *p = pDataInit();
+  
 
   printf("fName: %s\n",fileName);
   /* Create pthread, check that it makes correctly */
