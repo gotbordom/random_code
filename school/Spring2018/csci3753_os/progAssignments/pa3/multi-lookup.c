@@ -93,8 +93,8 @@ queue *queueInit(int size){
   q->items=0;
   q->head=0;
   q->tail=0;
-  q->full=0;
   q->empty=1;
+  q->full=0;
   q->mut = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));
   q->notFull = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));
   pthread_cond_init(q->notFull,NULL); 
