@@ -68,12 +68,12 @@ char *front(queue *q);
 /* ------------Methods----------------------- */
 
 // pData methods:
-pData *pDataInit(queue *q, int size,char *files){
+pData *pDataInit(queue *q, int numFiles,char *files){
   pData *p;
   p = (pData *)malloc(sizeof(pData));
   p->fName = files;
-  p->isComplete = (int *)malloc(sizeof(int)*size);
-  p->size=size;
+  p->isComplete = (int *)malloc(sizeof(int)*numFiles);
+  p->items=numFiles;
   return p;
 }
 void pDataDelete(pData *p){
@@ -190,15 +190,15 @@ int main(int argc,char *argv[]){
   //}
 
   //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
-  int numProd = 5;
+  int queueSize = 5;
 
   pthread_t prod0;
   pthread_t cons0;
 
 
   /* Create dataset for producer */
-  queue *q = queueInit(numProd);
-  pData *p = pDataInit();
+  queue *q = queueInit(queueSize);
+  pData *p = pDataInit(q,1,(char *)fileName);
   
 
   printf("fName: %s\n",fileName);
@@ -213,6 +213,8 @@ int main(int argc,char *argv[]){
     return 2;
   }
 
+  /* Clean up */
+  queueDelete(q);
   free(fName);
   return 0;
 }//End of main
