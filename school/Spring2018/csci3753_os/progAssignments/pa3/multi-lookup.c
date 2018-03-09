@@ -46,15 +46,15 @@ typedef struct{
 
 
 typedef struct{
-  queue *q;         // Also need to pass the shared q to all threads
-  char *fName;      // pointer to a string - the filename to read
-  int items;         // want the number of files to be read
-  int *isComplete;  // Are the files done being read or not (1) true (0) false - bit map would save space...
+  queue *q;            // Also need to pass the shared q to all threads
+  FILE *fHandles;      // pointer to a string - the filename to read
+  int items;           // want the number of files to be read
+  int *isComplete;     // Are the files done being read or not (1) true (0) false - bit map would save space...
 } pData;
 
 
 /* Queues */
-pData *pDataInit(queue *q,int size,char *files);
+pData *pDataInit(queue *q,int size,FILE *fHandle);
 void pDataDelete(pData *p);
 
 queue *queueInit(int size);
@@ -68,11 +68,11 @@ char *front(queue *q);
 /* ------------Methods----------------------- */
 
 // pData methods:
-pData *pDataInit(queue *q, int numFiles,char *files){
+pData *pDataInit(queue *q, int numFiles,FILE *fHandle){
   pData *p;
   p = (pData *)malloc(sizeof(pData));
   p->q = q;
-  p->fName = files;
+  p->fHandles = fHandle;
   p->isComplete = (int *)malloc(sizeof(int)*numFiles);
   p->items=numFiles;
   return p;
@@ -159,16 +159,20 @@ char *front(queue *q){
 
 /* Producer: */
 
-void *producer(void *fName){
+void *producer(void *p){
   /* Testing with a string-filename */
-  char buff[256];                       // Make a buffer to write things too...
-  FILE *fHandle;                        // Make a file handler for input files
-  
+  char buff[256];                                 // Make a buffer to write things too...
+  pData *pShared;
+  pShared = (pData *)p;
+  FILE *fH = pShared->fHandles;                        // Make a file handler for input files  
 
-  fHandle = fopen(fName,"r");  // Read the file from the location of fName pointer
-  if(fHandle){
-    while(fgets(buff,256,fHandle)!=NULL){
+  //fHandle = fopen(fName,"r");  // Read the file from the location of fName pointer
+  if(fH){
+    while(fgets(buff,256,fH)!=NULL){
       printf("PID: %lu read: %s\n",pthread_self(),buff);
+      /* Now add to the queue */
+      
+
     }//End while
   }//End if handle loaded correctly
   return NULL;
@@ -192,6 +196,8 @@ int main(int argc,char *argv[]){
 
   //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
   int queueSize = 5;
+  FILE *fHandle;                        // Make a file handler for input files  
+  fHandle = fopen(fileName,"r");  // Read the file from the location of fName pointer
 
   pthread_t prod0;
   pthread_t cons0;
@@ -199,12 +205,12 @@ int main(int argc,char *argv[]){
 
   /* Create dataset for producer */
   queue *q = queueInit(queueSize);
-  //pData *p = pDataInit(q,1,(char *)fileName);
+  pData *p = pDataInit(q,1,fHandle);
   
 
   printf("fName: %s\n",fileName);
   /* Create pthread, check that it makes correctly */
-  if(pthread_create(&prod0,NULL,producer,&fileName)){
+  if(pthread_create(&prod0,NULL,producer,&p)){
     fprintf(stderr,"Error making pthread\n");
     return 1;
   }
