@@ -48,7 +48,7 @@ typedef struct{
 typedef struct{
   queue *q;         // Also need to pass the shared q to all threads
   char *fName;      // pointer to a string - the filename to read
-  int size;         // want the number of files to be read
+  int items;         // want the number of files to be read
   int *isComplete;  // Are the files done being read or not (1) true (0) false - bit map would save space...
 } pData;
 
@@ -71,6 +71,7 @@ char *front(queue *q);
 pData *pDataInit(queue *q, int numFiles,char *files){
   pData *p;
   p = (pData *)malloc(sizeof(pData));
+  p->q = q;
   p->fName = files;
   p->isComplete = (int *)malloc(sizeof(int)*numFiles);
   p->items=numFiles;
@@ -198,7 +199,7 @@ int main(int argc,char *argv[]){
 
   /* Create dataset for producer */
   queue *q = queueInit(queueSize);
-  pData *p = pDataInit(q,1,(char *)fileName);
+  //pData *p = pDataInit(q,1,(char *)fileName);
   
 
   printf("fName: %s\n",fileName);
@@ -215,7 +216,7 @@ int main(int argc,char *argv[]){
 
   /* Clean up */
   queueDelete(q);
-  free(fName);
+  //free(fName);
   return 0;
 }//End of main
 
