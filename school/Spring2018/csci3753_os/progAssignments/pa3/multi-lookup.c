@@ -95,23 +95,23 @@ queue *queueInit(int size){
   q->tail=0;
   q->empty=1;
   q->full=0;
-  q->mut = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));
-  pthread_mutex_init(q->mut,NULL);
-  q->notFull = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));
-  pthread_cond_init(q->notFull,NULL); 
-  q->notEmpty = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));
-  pthread_cond_init(q->notEmpty,NULL); 
+  //q->mut = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));
+  //pthread_mutex_init(q->mut,NULL);
+  //q->notFull = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));
+  //pthread_cond_init(q->notFull,NULL); 
+  //q->notEmpty = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));
+  //pthread_cond_init(q->notEmpty,NULL); 
 
   return q;
 }
 
 void queueDelete(queue *q){
-  pthread_mutex_destroy (q->mut);
-  free(q->mut);
-  pthread_cond_destroy (q->notFull);
-  free(q->notFull); 
-  pthread_cond_destroy (q->notEmpty);
-  free(q->notEmpty);
+  //pthread_mutex_destroy (q->mut);
+  //free(q->mut);
+  //pthread_cond_destroy (q->notFull);
+  //free(q->notFull); 
+  //pthread_cond_destroy (q->notEmpty);
+  //free(q->notEmpty);
   free(q->string);
   free(q);
 }
@@ -131,7 +131,7 @@ return;
 }
 
 void enqueue(queue *q,char *element){
-  q->string[q->head]=element; // Add string pointer to queue
+  q->string[q->tail]=element; // Add string pointer to queue - I was adding to head changed to tail
   q->items++;                 // queue length +1
   q->tail++;                  // Move tail location +1
   if(q->tail==q->max){        // Make sure to have circular queue
@@ -183,6 +183,7 @@ void *producer(void *p){
       if(!(pShared->q->full)){
         printf("Trying an Add.\n");
         enqueue(pShared->q,buff);
+        printf("Front: %s,Head: %d,Tail: %d",front(pShared->q),pShared->q->head,pShared->q->tail);
       }//End of if queue is full
       else{
         printf("Queue is full.\n");
@@ -209,12 +210,12 @@ int main(int argc,char *argv[]){
   //}
 
   //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
-  int queueSize = 25;
+  int queueSize = 20;
   FILE *fHandle;                        // Make a file handler for input files  
   fHandle = fopen(fileName,"r");  // Read the file from the location of fName pointer
 
   pthread_t prod0;
-  pthread_t cons0;
+  //pthread_t cons0;
 
 
   // Create dataset for producer 
@@ -228,16 +229,16 @@ int main(int argc,char *argv[]){
     return 1;
   }
   // Wait for thread to complete correctly
-  if(pthread_join(&prod0,NULL)){
+  if(pthread_join(prod0,NULL)){
     fprintf(stderr,"Error joining.\n");
     return 2;
   }
   
   // Testing my producer */
-  printf("Top: %s\n",front(p->q));
+  //printf("Top: %s\n",front(p->q));
   //printf("isEmpty: %d, isFull: %d\n",q->empty,q->full);
   // Clean up 
-  queueDelete(q);
+  //queueDelete(q);
   pDataDelete(p);
   return 0;
 }//End of main
