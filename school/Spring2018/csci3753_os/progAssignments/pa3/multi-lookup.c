@@ -162,24 +162,18 @@ char *front(queue *q){
 /* Producer: */
 
 void *producer(void *p){
-  /* Testing with a string-filename */
-  char buff[256];                                 // Make a buffer to write things too...
+  char buff[256];                      // Make a buffer to write things too...
   pData *pShared; 
   pShared = (pData *)p;
   
-  //struct queue *qShared = (struct queue *)pShared->q;
-
-  //printf("full: %d, empty: %d\n",pShared->q->full,pShared->q->empty);
   printf("full: %d, empty: %d\n",pShared->q->full,pShared->q->empty);
 
-  FILE *fH = pShared->fHandles;                        // Make a file handler for input files  
+  FILE *fH = pShared->fHandles;        // Make a file handler for input files  
 
-  //fHandle = fopen(fName,"r");  // Read the file from the location of fName pointer
   if(fH){
     while(fgets(buff,256,fH)!=NULL){
       printf("PID: %lu read: %s",pthread_self(),buff);
       /* Now add to the queue */
-      //printf("isFull: %d\n",qShared->full);
       if(!(pShared->q->full)){
         printf("Trying an Add.\n");
         enqueue(pShared->q,buff);
@@ -195,6 +189,12 @@ void *producer(void *p){
 
 
 /* Consumer */
+
+void *consumer(void *p){
+  char buff[256];
+  
+  return NULL;
+}//End consumer
 
 
 /* -----------------Main--------------------------------- */ 
