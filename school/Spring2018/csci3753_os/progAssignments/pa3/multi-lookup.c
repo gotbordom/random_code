@@ -48,13 +48,13 @@ typedef struct{
 typedef struct{
   queue *q;            // Also need to pass the shared q to all threads
   FILE *fHandles;      // pointer to a string - the filename to read
-  int items;           // want the number of files to be read
-  int *isComplete;     // Are the files done being read or not (1) true (0) false - bit map would save space...
+  //int items;           // want the number of files to be read
+  //int *isComplete;     // Are the files done being read or not (1) true (0) false - bit map would save space...
 } pData;
 
 
 /* Queues */
-pData *pDataInit(int size,FILE *fHandle,int qSize);
+pData *pDataInit(queue *q,FILE *fHandle);
 void pDataDelete(pData *p);
 
 queue *queueInit(int size);
@@ -68,13 +68,13 @@ char *front(queue *q);
 /* ------------Methods----------------------- */
 
 // pData methods:
-pData *pDataInit(int numFiles,FILE *fHandle,int qSize){
+pData *pDataInit(queue *q,FILE *fHandle){
   pData *p;
   p = (pData *)malloc(sizeof(pData));
-  p->q = queueInit(qSize);
+  p->q = q;
   p->fHandles = fHandle;
   //p->isComplete = (int *)malloc(sizeof(int)*numFiles);
-  p->items=numFiles;
+  //p->items=numFiles;
   return p;
 }
 void pDataDelete(pData *p){
@@ -96,6 +96,7 @@ queue *queueInit(int size){
   q->empty=1;
   q->full=0;
   q->mut = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));
+  pthread_mutex_init(q->mut,NULL);
   q->notFull = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));
   pthread_cond_init(q->notFull,NULL); 
   q->notEmpty = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));
@@ -163,14 +164,13 @@ char *front(queue *q){
 void *producer(void *p){
   /* Testing with a string-filename */
   char buff[256];                                 // Make a buffer to write things too...
-  pData *pShared;
+  pData *pShared; 
   pShared = (pData *)p;
   
-  queue *qShared;
-  qShared = (queue *)pShared->q;
+  //struct queue *qShared = (struct queue *)pShared->q;
 
   //printf("full: %d, empty: %d\n",pShared->q->full,pShared->q->empty);
-  printf("full: %d, empty: %d\n",qShared->full,qShared->empty);
+  printf("full: %d, empty: %d\n",pShared->q->full,pShared->q->empty);
 
   FILE *fH = pShared->fHandles;                        // Make a file handler for input files  
 
@@ -202,14 +202,14 @@ int main(int argc,char *argv[]){
  
   char fileName[256]="input/names1.txt";
   //char *files[argc]=argv;
-  /* Create array of filenames */
+  // Create array of filenames 
   //char *fName = (char *)malloc(sizeof(char*)*(argc-1));
   //for(int i=0; i<argc; i++){
   //  fName[i]=&argv[i+1];
   //}
 
   //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
-  int queueSize = 21;
+  int queueSize = 25;
   FILE *fHandle;                        // Make a file handler for input files  
   fHandle = fopen(fileName,"r");  // Read the file from the location of fName pointer
 
@@ -217,27 +217,27 @@ int main(int argc,char *argv[]){
   pthread_t cons0;
 
 
-  /* Create dataset for producer */
-  //queue *q = queueInit(queueSize);
-  pData *p = pDataInit(1,fHandle,queueSize);
+  // Create dataset for producer 
+  queue *q = queueInit(queueSize);
+  pData *p = pDataInit(q,fHandle);
   printf("full: %d, empty: %d\n",p->q->full,p->q->empty);
 
-  /* Create pthread, check that it makes correctly */
-  if(pthread_create(&prod0,NULL,producer,&p)){
+  // Create pthread, check that it makes correctly 
+  if(pthread_create(&prod0,NULL,producer,p)){
     fprintf(stderr,"Error making pthread\n");
     return 1;
   }
-  /* Wait for thread to complete correctly*/
-  if(pthread_join(prod0,NULL)){
+  // Wait for thread to complete correctly
+  if(pthread_join(&prod0,NULL)){
     fprintf(stderr,"Error joining.\n");
     return 2;
   }
   
-  /* Testing my producer */
+  // Testing my producer */
   printf("Top: %s\n",front(p->q));
   //printf("isEmpty: %d, isFull: %d\n",q->empty,q->full);
-  /* Clean up */
-  //queueDelete(q);
+  // Clean up 
+  queueDelete(q);
   pDataDelete(p);
   return 0;
 }//End of main
