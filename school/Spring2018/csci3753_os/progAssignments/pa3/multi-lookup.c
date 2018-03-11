@@ -49,7 +49,7 @@ typedef struct{
   queue *q;            // Also need to pass the shared q to all threads
   FILE *fHandles;      // pointer to a string - the filename to read
   //int items;           // want the number of files to be read
-  //int *isComplete;     // Are the files done being read or not (1) true (0) false - bit map would save space...
+  int isComplete;     // Are the files done being read or not (1) true (0) false - bit map would save space...
 } pData;
 
 
@@ -73,7 +73,7 @@ pData *pDataInit(queue *q,FILE *fHandle){
   p = (pData *)malloc(sizeof(pData));
   p->q = q;
   p->fHandles = fHandle;
-  //p->isComplete = (int *)malloc(sizeof(int)*numFiles);
+  p->isComplete = 0;
   //p->items=numFiles;
   return p;
 }
@@ -123,7 +123,7 @@ void dequeue(queue *q){
     q->head=0;
   }
   if(q->tail==q->head){ // Head met tail, we are empty
-    printf("Queue is empty.\n");
+    printf("Line: %d Queue is empty.\n",__LINE__);
     q->empty=1;
   }
   q->full=0;            // We can't be full if we just dequeued
@@ -138,7 +138,7 @@ void enqueue(queue *q,char *element){
     q->tail=0;
   }
   if(q->tail==q->head){       // Check when full
-    printf("Queue is full.\n");
+    printf("Line: %d Queue is full.\n",__LINE__);
     q->full=1;
   }
   q->empty=0;                 // Can't be empty if we just added
@@ -148,7 +148,7 @@ return;
 char *front(queue *q){
   /* Make sure that the queue isn't empty */
   if(q->items==0){
-    printf("Queue is empty.\n");
+    printf("Line: %d Queue is empty.\n",__LINE__);
     return NULL;
   }
   else{
@@ -166,7 +166,7 @@ void *producer(void *p){
   pData *pShared; 
   pShared = (pData *)p;
   
-  printf("full: %d, empty: %d\n",pShared->q->full,pShared->q->empty);
+  printf("Line: %d full: %d, empty: %d\n",__LINE__,pShared->q->full,pShared->q->empty);
 
   FILE *fH = pShared->fHandles;        // Make a file handler for input files  
 
@@ -175,22 +175,25 @@ void *producer(void *p){
       //printf("PID: %lu read: %s",pthread_self(),buff);
       // Now add to the queue 
       //if(!(pShared->q->full)){
-        printf("Locking to add.\n");
+        printf("Line: %d Locking to add.\n",__LINE__);
         pthread_mutex_lock(pShared->q->mut);                // Adding lock
         while(pShared->q->full){
-          printf("PID: %lu is waiting, buffer full.",pthread_self());
+          printf("Line: %d PID: %lu is waiting, buffer full.",__LINE__,pthread_self());
           pthread_cond_wait(pShared->q->notFull,pShared->q->mut);  // Block on condition and release lock
         }
         enqueue(pShared->q,buff);                // Add data to queue
         pthread_mutex_unlock(pShared->q->mut);              // Unlock queue
         pthread_cond_signal(pShared->q->notEmpty);        // Make sure to signal that consumer can do something
-        printf("Front: %s\nHead: %d,Tail: %d\n",front(pShared->q),pShared->q->head,pShared->q->tail);
+        printf("Line: %d isFull: %d Front: %s\n",__LINE__,pShared->q->full,front(pShared->q));
       //}//End of if queue is full
       //else{
       //  printf("Queue is full.\n");
       //}
     }//End while
   }//End if handle loaded correctly
+
+  // Make sure to flip the 'I am done bit'
+  pShared->isComplete=1;
   return NULL;
 }// End producer
 
@@ -204,10 +207,23 @@ void *consumer(void *c){
   
   printf("PID: %lu Look I am a consumer\n",pthread_self());
   
-  FILE *pShared->fHandles;
-  printf("Locking to take.\n");
-  pthread_mutex_lock(pShared->q->mut);
+  FILE *fH = pShared->fHandles;
+  // Make sure we loop til done
+  while(!pShared->isComplete){ 
+    printf("Locking to take.\n");
+    pthread_mutex_lock(pShared->q->mut);
+    while(pShared->q->empty){
+      printf("PID: %lu waiting, Buffer is empty.\n",pthread_self());
+      pthread_cond_wait(pShared->q->notEmpty,pShared->q->mut);     // Block thread till notEmpty 
+    }//Done waiting for work
+    printf("PID: read: %s\nHead: %d,Tail: %d\n",front(pShared->q),pShared->q->head,pShared->q->tail);
+    //Write front to the file...
+    dequeue(pShared->q);
+    pthread_mutex_unlock(pShared->q->mut);
+    pthread_cond_signal(pShared->q->notFull);
+  }//At this point isComplete=1
 
+  
   return NULL;
 }//End consumer
 
@@ -232,7 +248,7 @@ int main(int argc,char *argv[]){
   f2Write = fopen(toWrite,"w");
 
   pthread_t prod0;
-  pthread_t cons0;
+  //pthread_t cons0;
 
 
   // Create dataset for producer 
@@ -247,24 +263,24 @@ int main(int argc,char *argv[]){
     return 1;
   }
   // Create pthread consumer
-  if(pthread_create(&cons0,NULL,consumer,c)){
-    fprintf(stderr,"Error making pthread con\n");
-    return 1;
-  }
+  //if(pthread_create(&cons0,NULL,consumer,c)){
+  //  fprintf(stderr,"Error making pthread con\n");
+  //  return 1;
+  //}
 
   // Wait for thread to complete correctly
   if(pthread_join(prod0,NULL)){
     fprintf(stderr,"Error joining prod.\n");
     return 2;
   }
-  if(pthread_join(cons0,NULL)){
-    fprintf(stderr,"Error joining cons.\n");
-    return 2;
-  }
+  //if(pthread_join(cons0,NULL)){
+  //  fprintf(stderr,"Error joining cons.\n");
+  //  return 2;
+  //}
 
 
   // Testing my producer */
-  //printf("Top: %s\n",front(p->q));
+  printf("Top: %s\n",front(p->q));
   //printf("isEmpty: %d, isFull: %d\n",q->empty,q->full);
   // Clean up 
   //queueDelete(q);
