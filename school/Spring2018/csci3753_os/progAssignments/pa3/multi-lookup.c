@@ -23,7 +23,7 @@ typedef struct{
   int max,items,isComplete;
   int head, tail;       // Need these locations
   int full, empty;      // want to know for signaling
-  pthread_mutex_t *mut; // Make sure to have a lock for accessing this queue
+  pthread_mutex_t *mut; // Make sure to have a lock for accessing this buffer
   pthread_cond_t *notFull, *notEmpty; // Make sure to have conditions to signal on
   char **string;
 } buffer;
@@ -62,12 +62,12 @@ threadData *threadDataInit(buffer *b,FILE *fHandle){
   return p;
 }
 void threadDataDelete(threadData *p){
- //queueDelete(p->q);
+ //bufferDelete(p->q);
  //free(p->isComplete);
  free(p);
 }
 
-// queue methods:
+// buffer methods:
 buffer *bufferInit(int size){
   buffer *b;
   b = (buffer *)malloc(sizeof(buffer));
@@ -102,24 +102,24 @@ void bufferDelete(buffer *b){
 }
 
 void bufferRem(buffer *b){
-  b->items--;          // decrease length of queue
+  b->items--;          // decrease length of buffer
   b->head++;           // May be considered bad practice... but don't actually delete just move
-  if(b->head==b->max){ // Make it a circular queue
+  if(b->head==b->max){ // Make it a circular buffer
     b->head=0;
   }
   if(b->tail==b->head){ // Head met tail, we are empty
     printf("Line: %d Buffer is empty.\n",__LINE__);
     b->empty=1;
   }
-  b->full=0;            // We can't be full if we just dequeued
+  b->full=0;            // We can't be full if we just removed
 return;
 }
 
 void bufferAdd(buffer *b,char *element){
-  b->string[b->tail]=element; // Add string pointer to queue - I was adding to head changed to tail
-  b->items++;                 // queue length +1
+  b->string[b->tail]=element; // Add string pointer to buffer - I was adding to head changed to tail
+  b->items++;                 // buffer length +1
   b->tail++;                  // Move tail location +1
-  if(b->tail==b->max){        // Make sure to have circular queue
+  if(b->tail==b->max){        // Make sure to have circular buffer
     b->tail=0;
   }
   if(b->tail==b->head){       // Check when full
@@ -128,10 +128,10 @@ void bufferAdd(buffer *b,char *element){
   }
   b->empty=0;                 // Can't be empty if we just added
 return;
-}//End of Enqueue
+}//End of buffer add
 
 char *front(buffer *b){
-  /* Make sure that the queue isn't empty */
+  /* Make sure that the buffer isn't empty */
   if(b->items==0){
     printf("Line: %d Buffer is empty.\n",__LINE__);
     return NULL;
@@ -158,7 +158,7 @@ void *producer(void *p){
   if(fH){
     while(fgets(buff,256,fH)!=NULL){
       //printf("PID: %lu read: %s",pthread_self(),buff);
-      // Now add to the queue 
+      // Now add to the buffer 
       //if(!(pShared->q->full)){
         printf("Line: %d Producer locking.\n",__LINE__);
         pthread_mutex_lock(pShared->b->mut);                // Adding lock
@@ -166,11 +166,11 @@ void *producer(void *p){
           printf("Line: %d Producer waiting\n",__LINE__);//pPID: %lu is waiting, buffer full.",__LINE__,pthread_self());
           pthread_cond_wait(pShared->b->notFull,pShared->b->mut);  // Block on condition and release lock
         }
-        bufferAdd(pShared->b,buff);                // Add data to queue
-        pthread_mutex_unlock(pShared->b->mut);              // Unlock queue
+        bufferAdd(pShared->b,buff);                // Add data to buffer
+        pthread_mutex_unlock(pShared->b->mut);              // Unlock buffer
         pthread_cond_signal(pShared->b->notEmpty);        // Make sure to signal that consumer can do something
         printf("Line: %d Producer writing: %s",__LINE__,front(pShared->b));
-      //}//End of if queue is full
+      //}//End of if buffer is full
       //else{
       //  printf("Queue is full.\n");
       //}
@@ -195,7 +195,7 @@ void *consumer(void *c){
   
   FILE *fH = pShared->fHandles;
   // Make sure we loop til done
-  while(!pShared->b->isComplete){ 
+  //while(!pShared->b->isComplete){ 
     printf("Line: %d Consumer Locking.\n",__LINE__);
     pthread_mutex_lock(pShared->b->mut);
     while(pShared->b->empty){
@@ -212,7 +212,7 @@ void *consumer(void *c){
     bufferRem(pShared->b);
     pthread_mutex_unlock(pShared->b->mut);      // Unlock
     pthread_cond_signal(pShared->b->notFull);   // Signal producer
-  }//At this point isComplete=1
+  //}//At this point isComplete=1
 
   
   return NULL;
@@ -233,7 +233,7 @@ int main(int argc,char *argv[]){
   //}
 
   //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
-  int queueSize = 30;
+  int bufferSize = 30;
   FILE *fHandle,*f2Write;                        // Make a file handler for input files  
   fHandle = fopen(fileName,"r");  // Read the file from the location of fName pointer
   f2Write = fopen(toWrite,"w");
@@ -243,7 +243,7 @@ int main(int argc,char *argv[]){
 
 
   // Create dataset for producer 
-  buffer *b = bufferInit(queueSize);
+  buffer *b = bufferInit(bufferSize);
   threadData *p = threadDataInit(b,fHandle);
   threadData *c = threadDataInit(b,f2Write);
   printf("full: %d, empty: %d\n",p->b->full,p->b->empty);
@@ -274,7 +274,10 @@ int main(int argc,char *argv[]){
   printf("Top: %s\n",front(p->b));
   //printf("isEmpty: %d, isFull: %d\n",q->empty,q->full);
   // Clean up 
-  //queueDelete(q);
+  //bufferDelete(q);
+  fclose(fHandle);
+  fclose(f2Write);
+
   threadDataDelete(c);
   threadDataDelete(p);
   bufferDelete(b);
@@ -287,42 +290,3 @@ int main(int argc,char *argv[]){
 
 
 
-
-/* ------------Old code and notes--------------------------- */
-/* ------------Main Funciton(Testing Queue)----------------- */
-/*
-int main(){//int argc,char argv[]){
-
-  char buff[256];
-  //char test[256];
-  FILE *fHandle;
-  size_t nread;
-
-  // Testing my queue, should throw a lot of "Queue is full"...
-  queue *q = queueInit(5);
-
-  fHandle=fopen("input/names1.txt","r");
-  if(fHandle) {
-    //while((nread = fread(buff,1,sizeof buff,fHandle)) >0)
-      //fwrite(buff,1,nread,stdout);
-    while(fgets(buff,256,fHandle)!=NULL){
-      printf("Items: %d \n",q->items);
-      printf("%s",buff);
-      if (!(q->full)){
-        enqueue(q,buff);
-      }
-      else{
-        //test=front(q);
-        //fgets(test,256,front(q));
-        printf("Look one from queue:\n");
-        printf("front: %s\n",front(q));
-        dequeue(q);
-        enqueue(q,buff);
-      }
-    }
-  }
-  printf("head: %s\n",q->string[0]);
-  fclose(fHandle);
-  queueDelete(q);
-}
-*/
