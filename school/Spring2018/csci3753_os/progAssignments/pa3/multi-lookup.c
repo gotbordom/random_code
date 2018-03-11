@@ -164,7 +164,7 @@ char *front(queue *q){
 void *producer(void *p){
   char buff[256];                      // Make a buffer to write things too...
   pData *pShared; 
-  pShared = (pData *)p;
+  *pShared = *(pData *)p;
   
   printf("full: %d, empty: %d\n",pShared->q->full,pShared->q->empty);
 
