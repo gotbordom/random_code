@@ -78,7 +78,7 @@ pData *pDataInit(queue *q,FILE *fHandle){
   return p;
 }
 void pDataDelete(pData *p){
- queueDelete(p->q);
+ //queueDelete(p->q);
  //free(p->isComplete);
  free(p);
 }
@@ -177,7 +177,7 @@ void *producer(void *p){
       if(!(pShared->q->full)){
         printf("Trying an Add.\n");
         enqueue(pShared->q,buff);
-        printf("Front: %s,Head: %d,Tail: %d",front(pShared->q),pShared->q->head,pShared->q->tail);
+        printf("Front: %s\nHead: %d,Tail: %d\n",front(pShared->q),pShared->q->head,pShared->q->tail);
       }//End of if queue is full
       else{
         printf("Queue is full.\n");
@@ -190,9 +190,15 @@ void *producer(void *p){
 
 /* Consumer */
 
-void *consumer(void *p){
+void *consumer(void *c){
   char buff[256];
+  pData *pShared;
+  pShared = (pData *)c;
   
+  //printf("PID: %lu Look I am a consumer\n",pthread_self());
+
+  
+
   return NULL;
 }//End consumer
 
@@ -202,6 +208,7 @@ void *consumer(void *p){
 int main(int argc,char *argv[]){
  
   char fileName[256]="input/names1.txt";
+  char toWrite[256]="output/results.txt";
   //char *files[argc]=argv;
   // Create array of filenames 
   //char *fName = (char *)malloc(sizeof(char*)*(argc-1));
@@ -211,35 +218,50 @@ int main(int argc,char *argv[]){
 
   //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
   int queueSize = 20;
-  FILE *fHandle;                        // Make a file handler for input files  
+  FILE *fHandle,*f2Write;                        // Make a file handler for input files  
   fHandle = fopen(fileName,"r");  // Read the file from the location of fName pointer
+  f2Write = fopen(toWrite,"w");
 
   pthread_t prod0;
-  //pthread_t cons0;
+  pthread_t cons0;
 
 
   // Create dataset for producer 
   queue *q = queueInit(queueSize);
   pData *p = pDataInit(q,fHandle);
+  pData *c = pDataInit(q,f2Write);
   printf("full: %d, empty: %d\n",p->q->full,p->q->empty);
 
   // Create pthread, check that it makes correctly 
   if(pthread_create(&prod0,NULL,producer,p)){
-    fprintf(stderr,"Error making pthread\n");
+    fprintf(stderr,"Error making pthread pro\n");
     return 1;
   }
+  // Create pthread consumer
+  if(pthread_create(&cons0,NULL,consumer,c)){
+    fprintf(stderr,"Error making pthread con\n");
+    return 1;
+  }
+
   // Wait for thread to complete correctly
   if(pthread_join(prod0,NULL)){
-    fprintf(stderr,"Error joining.\n");
+    fprintf(stderr,"Error joining prod.\n");
     return 2;
   }
-  
+  if(pthread_join(cons0,NULL)){
+    fprintf(stderr,"Error joining cons.\n");
+    return 2;
+  }
+
+
   // Testing my producer */
   //printf("Top: %s\n",front(p->q));
   //printf("isEmpty: %d, isFull: %d\n",q->empty,q->full);
   // Clean up 
   //queueDelete(q);
+  pDataDelete(c);
   pDataDelete(p);
+  queueDelete(q);
   return 0;
 }//End of main
 
