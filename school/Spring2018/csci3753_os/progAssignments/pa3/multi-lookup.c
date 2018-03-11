@@ -175,8 +175,15 @@ void *producer(void *p){
       printf("PID: %lu read: %s",pthread_self(),buff);
       /* Now add to the queue */
       if(!(pShared->q->full)){
-        printf("Trying an Add.\n");
-        enqueue(pShared->q,buff);
+        printf("Locking to add.\n");
+        pthread_mut_lock(p->mut);                // Adding lock
+        while(p->full){
+          printf("PID: is waiting, buffer full.",pthread_self());
+          pthread_cond_wait(p->notFull,p->mut);  // Block on condition and release lock
+        }
+        enqueue(pShared->q,buff);                // Add data to queue
+        pthread_mut_unlock(p->mut);              // Unlock queue
+        pthread_cond_signal(p->noEmpty);         // Make sure to signal that consumer can do something
         printf("Front: %s\nHead: %d,Tail: %d\n",front(pShared->q),pShared->q->head,pShared->q->tail);
       }//End of if queue is full
       else{
@@ -195,7 +202,7 @@ void *consumer(void *c){
   pData *pShared;
   pShared = (pData *)c;
   
-  //printf("PID: %lu Look I am a consumer\n",pthread_self());
+  printf("PID: %lu Look I am a consumer\n",pthread_self());
 
   
 
