@@ -164,7 +164,7 @@ char *front(queue *q){
 void *producer(void *p){
   char buff[256];                      // Make a buffer to write things too...
   pData *pShared; 
-  *pShared = *(pData *)p;
+  pShared = (pData *)p;
   
   printf("full: %d, empty: %d\n",pShared->q->full,pShared->q->empty);
 
@@ -174,21 +174,21 @@ void *producer(void *p){
     while(fgets(buff,256,fH)!=NULL){
       printf("PID: %lu read: %s",pthread_self(),buff);
       /* Now add to the queue */
-      if(!(pShared->q->full)){
+      //if(!(pShared->q->full)){
         printf("Locking to add.\n");
-        pthread_mut_lock(p->mut);                // Adding lock
-        while(p->full){
-          printf("PID: is waiting, buffer full.",pthread_self());
-          pthread_cond_wait(p->notFull,p->mut);  // Block on condition and release lock
+        pthread_mutex_lock(pShared->q->mut);                // Adding lock
+        while(pShared->q->full){
+          printf("PID: %lu is waiting, buffer full.",pthread_self());
+          pthread_cond_wait(pShared->q->notFull,pShared->q->mut);  // Block on condition and release lock
         }
         enqueue(pShared->q,buff);                // Add data to queue
-        pthread_mut_unlock(p->mut);              // Unlock queue
-        pthread_cond_signal(p->noEmpty);         // Make sure to signal that consumer can do something
+        pthread_mutex_unlock(pShared->q->mut);              // Unlock queue
+        pthread_cond_signal(pShared->q->notEmpty);        // Make sure to signal that consumer can do something
         printf("Front: %s\nHead: %d,Tail: %d\n",front(pShared->q),pShared->q->head,pShared->q->tail);
-      }//End of if queue is full
-      else{
-        printf("Queue is full.\n");
-      }
+      //}//End of if queue is full
+      //else{
+      //  printf("Queue is full.\n");
+      //}
     }//End while
   }//End if handle loaded correctly
   return NULL;
