@@ -172,8 +172,8 @@ void *producer(void *p){
 
   if(fH){
     while(fgets(buff,256,fH)!=NULL){
-      printf("PID: %lu read: %s",pthread_self(),buff);
-      /* Now add to the queue */
+      //printf("PID: %lu read: %s",pthread_self(),buff);
+      // Now add to the queue 
       //if(!(pShared->q->full)){
         printf("Locking to add.\n");
         pthread_mutex_lock(pShared->q->mut);                // Adding lock
@@ -203,8 +203,10 @@ void *consumer(void *c){
   pShared = (pData *)c;
   
   printf("PID: %lu Look I am a consumer\n",pthread_self());
-
   
+  FILE *pShared->fHandles;
+  printf("Locking to take.\n");
+  pthread_mutex_lock(pShared->q->mut);
 
   return NULL;
 }//End consumer
