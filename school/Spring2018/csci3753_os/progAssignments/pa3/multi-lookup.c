@@ -1,6 +1,12 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<pthread.h>
+#include "util.h"
+//#include "multi-lookup.h"
+
+// gcc -pthread -o multi-lookup multi-lookup.c -I .
+
+
 
 //MODULE_LICENSE("GPL");  // Not sure I reallllly need this for class but hey why not.
 //MODULE_AUTHOR("Anthony Tracy");
@@ -32,7 +38,8 @@ typedef struct{
 typedef struct{
   buffer *b;            // Also need to pass the shared q to all threads
   FILE *fHandles;      // pointer to a string - the filename to read
-  //int items;           // want the number of files to be read
+  pthread_mutex_t *threadLock;  // Locking when thread writes to logs
+  int serviced;           // want the number of lines 
   //int isComplete;     // Are the files done being read or not (1) true (0) false - bit map would save space...
 } threadData;
 
@@ -56,14 +63,18 @@ threadData *threadDataInit(buffer *b,FILE *fHandle){
   threadData *p;
   p = (threadData *)malloc(sizeof(threadData));
   p->b = b;
+  p->serviced = 0;
   p->fHandles = fHandle;
-  //p->isComplete = 0;
+  p->threadLock=(pthread_mutex_t*)malloc(sizeof(pthread_mutex_t));
+  pthread_mutex_init(p->threadLock,NULL);
   //p->items=numFiles;
   return p;
 }
 void threadDataDelete(threadData *p){
  //bufferDelete(p->q);
  //free(p->isComplete);
+ pthread_mutex_destroy(p->threadLock);
+ free(p->threadLock);
  free(p);
 }
 
@@ -148,6 +159,8 @@ char *front(buffer *b){
 
 void *producer(void *p){
   char buff[256];                      // Make a buffer to write things too...
+  char servFile[256]="output/serviced.txt";
+  char sBuff[256];
   threadData *pShared; 
   pShared = (threadData *)p;
   
@@ -161,14 +174,15 @@ void *producer(void *p){
       // Now add to the buffer 
       //if(!(pShared->q->full)){
         printf("Line: %d Producer locking.\n",__LINE__);
-        pthread_mutex_lock(pShared->b->mut);                // Adding lock
+        pthread_mutex_lock(pShared->b->mut);                      // Taking (trying) lock
         while(pShared->b->full){
-          printf("Line: %d Producer waiting\n",__LINE__);//pPID: %lu is waiting, buffer full.",__LINE__,pthread_self());
-          pthread_cond_wait(pShared->b->notFull,pShared->b->mut);  // Block on condition and release lock
+          printf("Line: %d Producer waiting\n",__LINE__);        //pPID: %lu is waiting, buffer full.",__LINE__,pthread_self());
+          pthread_cond_wait(pShared->b->notFull,pShared->b->mut);// Block on condition and release lock
         }
-        bufferAdd(pShared->b,buff);                // Add data to buffer
+
+        bufferAdd(pShared->b,buff);                         // Add data to buffer
         pthread_mutex_unlock(pShared->b->mut);              // Unlock buffer
-        pthread_cond_signal(pShared->b->notEmpty);        // Make sure to signal that consumer can do something
+        pthread_cond_signal(pShared->b->notEmpty);          // Make sure to signal that consumer can do something
         printf("Line: %d Producer writing: %s",__LINE__,front(pShared->b));
       //}//End of if buffer is full
       //else{
@@ -178,59 +192,87 @@ void *producer(void *p){
   }//End if handle loaded correctly
 
   // Make sure to flip the 'I am done bit'
+  pShared->serviced++;
   pShared->b->isComplete=1;
   printf("Line: %d isComplete: %d\n",__LINE__,pShared->b->isComplete);
-  return NULL;
+
+  // Before Closing it checks if it has any other files to service:
+  //
+  // Now write to serviced.txt how many this pid serviced:
+  //pthread_mutex_loc(pShared->threadLock); // Take lock for this serive file
+  FILE *sH = fopen(servFile,"a");
+  sprintf(sBuff,"%lu serviced %d files.\n",pthread_self(),pShared->serviced);
+  fputs(sBuff,sH);
+  fclose(sH);
+  //pthread_mutex_unlock(pShared->threadLock);
+
+  pthread_exit(NULL);
 }// End producer
 
 
 /* Consumer */
 
 void *consumer(void *c){
-  char buff[256];
+  char ip_buff[256];
+  char tmp[256];  
   threadData *pShared;
   pShared = (threadData *)c;
-  
+
   //printf("cPID: %lu Look I am a consumer\n",pthread_self());
   
   FILE *fH = pShared->fHandles;
   // Make sure we loop til done
-  //while(!pShared->b->isComplete){ 
+  while(1){ 
     printf("Line: %d Consumer Locking.\n",__LINE__);
     pthread_mutex_lock(pShared->b->mut);
     while(pShared->b->empty){
       if(pShared->b->isComplete){
-        break;
+        pthread_exit(NULL);
+        //break;
       }
-      else{
+      //else{
         printf("Line: %d Consumer waiting.\n",__LINE__);
         pthread_cond_wait(pShared->b->notEmpty,pShared->b->mut);     // Block thread till notEmpty 
-      }
+      //}
     }//Done waiting for work
     printf("Line: %d Consumer read: %s\n",__LINE__,front(pShared->b));
     //Write front to the file...
+    // First loop up IP address:
+    sprintf(tmp,"%s",front(pShared->b)); 
+    //if(dnslookup(ip_buff,tmp,sizeof(tmp))==UTIL_FAILURE){
+    //  sprintf(tmp,"%s,",front(pShared->b));
+    //}
+    //else{
+    //  sprintf(tmp,"%s,ip_buff",front(pShared->b));
+    //}
+    fputs(front(pShared->b),fH);//tmp,fH);
     bufferRem(pShared->b);
     pthread_mutex_unlock(pShared->b->mut);      // Unlock
     pthread_cond_signal(pShared->b->notFull);   // Signal producer
-  //}//At this point isComplete=1
+
+  }//At this point isComplete=1
 
   
-  return NULL;
+  pthread_exit(NULL);
 }//End consumer
 
 
 /* -----------------Main--------------------------------- */ 
 
 int main(int argc,char *argv[]){
- 
+  clock_t t0,t1;
+  t0=clock();
   char fileName[256]="input/names1.txt";
   char toWrite[256]="output/results.txt";
-  //char *files[argc]=argv;
+  char *files[argc];
   // Create array of filenames 
-  //char *fName = (char *)malloc(sizeof(char*)*(argc-1));
-  //for(int i=0; i<argc; i++){
-  //  fName[i]=&argv[i+1];
-  //}
+  //FILE *fName = (FILE *)malloc(sizeof(FILE*)*(argc-1));
+  for(int i=0; i<(argc-1); i++){
+    //fName[i]=fopen(argv[i+1],"r");
+    files[i] = argv[i+1];
+    printf("A filename: %s\n",argv[i+1]);
+    printf("%s\n",files[i]);
+  }
 
   //printf("args: %d\nfilename 1: %s\nfilename 2: %s\n",argc-1,&fName[0],&fName[1]);//,argv[1],argv[2]);
   int bufferSize = 30;
@@ -277,10 +319,18 @@ int main(int argc,char *argv[]){
   //bufferDelete(q);
   fclose(fHandle);
   fclose(f2Write);
+  //for(int i=0; i<argc;i++){
+  //  fclose(fName[i]);
+  //}
+  //free(fName);
 
   threadDataDelete(c);
   threadDataDelete(p);
   bufferDelete(b);
+
+  // Finished and looking at timing
+  t1=clock();
+  printf("Finished in: %f.\n",(double)(t1-t0)/CLOCKS_PER_SEC);
   return 0;
 }//End of main
 
