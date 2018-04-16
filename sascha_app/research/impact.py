@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 class impact:
-    def __init__(self,name,center=0):
+    def __init__(self,name,center=0,pix2um=1):
         self.name = name
         self.data = {}     # Since there is data for f(x) and g(x) top and bottom functions
         self.coeffs = {}   # There will be coeffs for each function as well
@@ -14,10 +14,17 @@ class impact:
         self.volume = 0
         self.center = center # Want to know if impact is actually centered at 0 or other
         # NOTE: I should eventually change this so that I use a numerical method to find lowest point of my fit function
+        self.pix2um=pix2um
+
     def add_data(self,x,f_x,g_x):
         self.data['f_x'] = f_x
         self.data['g_x'] = g_x
         self.data['x'] = x
+
+    def convert_pix2um(self):
+        self.data['x'] = self.data['x']/self.pix2um
+        self.data['f_x'] = self.data['f_x']/(self.pix2um*0.788) # 0.788 approx sin(52 degrees)
+        self.data['g_x'] = self.data['g_x']/(self.pix2um*0.788)
         
     def get_coeffs(self,n):
         # Notes:
@@ -151,8 +158,9 @@ x18_c2_x=np.array([0,19.35,39.92,63.61,95.09,120.67,174.94,189.07,226.66,251.2,2
 #rr_c1 = rr-0.22
 
 # x18 crater1
-x18_c1 = impact("cX18",-0.22)
+x18_c1 = impact("cX18",center=-0.22,pix2um=201)
 x18_c1.add_data(x18_c1_x2,x18_c1_f2,x18_c1_g2)
+x18_c1.convert_pix2um()
 x18_c1.get_coeffs(18)
 x18_c1.interp_data(np.linspace(-0.22,1,201))
 x18_c1.integrate()
@@ -162,8 +170,9 @@ x18_c1.visualize_3D(1.5,101) #,-0.22)
 
 
 # x18 crater 10:
-x18_c10 = impact("x18_c10",-0.05)
+x18_c10 = impact("x18_c10",center=-0.05,pix2um=201)
 x18_c10.add_data(x18_c10_x,x18_c10_f,x18_c10_g)
+x18_c10.convert_pix2um()
 x18_c10.get_coeffs(18)
 x18_c10.interp_data(np.linspace(0,1,201))
 x18_c10.integrate()
