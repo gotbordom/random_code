@@ -1,13 +1,14 @@
 /*
  * File: pager-predict.c
  * Author:       Andy Sayler
+ * Student Author: Anthony Tracy
  *               http://www.andysayler.com
  * Adopted From: Dr. Alva Couch
  *               http://www.cs.tufts.edu/~couch/
  *
  * Project: CSCI 3753 Programming Assignment 4
  * Create Date: Unknown
- * Modify Date: 2012/04/03
+ * Modify Date: 2018/04/15
  * Description:
  * 	This file contains a predictive pageit
  *      implmentation.
@@ -32,6 +33,7 @@ void pageit(Pentry q[MAXPROCESSES]) {
     /* Local vars */
     int proctmp;
     int pagetmp;
+    //int pagePred;
 
     /* initialize static vars on first run */
     if(!initialized){
@@ -52,10 +54,10 @@ void pageit(Pentry q[MAXPROCESSES]) {
 
 
                 // Going to try to make LRU better?
-                for(int i  = 0; i < 2; i++) {             // Trying to add the current page and the next makes it worse? huh also < 4 is bad to
+                for(int i  = 0; i < 3; i++) {             // Trying to add the current page and the next makes it worse? huh also < 4 is bad to
                     //printf("The pagetmp is: %i \n",pagetmp);
 
-                    if(!pagein(proctmp,pagetmp)) {            // Now check if we can page it in - after this line assume we don't
+                    if(!pagein(proctmp,pagetmp+i)) {            // Now check if we can page it in - after this line assume we don't
                         min_t = INT_MAX;      // Start at largest possible number...
                         int pg_rem;         // This will be a holder for LRU process
                         for(pg_rem = 0; pg_rem < q[proctmp].npages; pg_rem ++) { // Look through everything for lowest timestamp... costly
@@ -66,9 +68,12 @@ void pageit(Pentry q[MAXPROCESSES]) {
                         } // End of looking through all processes to remove - though i wonder if I couldn't do this all at once...
                         
                         /* Know the page to swap out...*/
+                        //pagePred = pagetmp + i;
                         if(pageout(proctmp,lru_pg)) {          // Make  sure pageout returns true
-                            pagein(proctmp,pagetmp + i);           // Having removed the lru_pg now add the current page (pagetmp)
+                            pagein(proctmp,(pagetmp + i));     // Having removed the lru_pg now add the current page (pagetmp)
                             timestamps[proctmp][lru_pg] = tick; // Make sure to update the clock on lru page
+
+
                         } // End of makeing a pageout
                     } // End of check if we can even page in
 
