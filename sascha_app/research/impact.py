@@ -40,13 +40,24 @@ class impact:
         self.data['f_r_pred'] = np.polynomial.chebyshev.chebval(r,self.coeffs['f_x'])
         self.data['g_r_pred'] = np.polynomial.chebyshev.chebval(r,self.coeffs['g_x'])
 
-
     def integrate(self):
         diff = self.data['f_r_pred']-self.data['g_r_pred']
         diff_radial = np.multiply(self.data['r_pred']-self.data['r_pred'][0],diff)
         true_vol = np.pi*diff[-1]*(self.data['r_pred'][-1]-self.data['r_pred'][0])**2
         pred_vol = 2*np.pi*np.trapz(diff_radial,self.data['r_pred'])
         print(pred_vol,'/',true_vol)
+
+    def visualize_2D(self,f_x='True',g_x='True'):
+        # Plotting just the data:
+        x = self.data['x'] / (0.5*max(self.data['x']))
+        x -= 1
+        print(x)
+        if f_x:
+            pyplot.plot(x,self.data['f_x'],'r')
+            pyplot.plot(self.data['r_pred'],self.data['f_r_pred'],'b--')
+        if g_x:
+            pyplot.plot(x,self.data['g_x'],'r')
+            pyplot.plot(self.data['r_pred'],self.data['g_r_pred'],'b--')
 
     def visualize_3D(self,rad,n,off_center=0): #coeffs,rad_sym=True):#,vander=vander_chebyshev):
         # Notes:
