@@ -54,7 +54,7 @@ class impact:
         diff_radial = np.multiply(self.data['r_pred']-self.data['r_pred'][0],diff)
         true_vol = np.pi*diff[-1]*(self.data['r_pred'][-1]-self.data['r_pred'][0])**2
         pred_vol = 2*np.pi*np.trapz(diff_radial,self.data['r_pred'])
-        print(pred_vol,'/',true_vol)
+        print('{0}/{1} = {2}'.format(pred_vol,true_vol,pred_vol/true_vol))
 
     def visualize_2D(self,f_x='True',g_x='True'):
         # Plotting just the data:
@@ -108,9 +108,10 @@ class impact:
         axes.plot_surface(xx, yy, zTop, cmap=pyplot.get_cmap());
         axes.plot_surface(xx, yy, zBot, cmap=pyplot.get_cmap());
         
-        axes.set_xlabel("x label") 
-        axes.set_ylabel("y label")
-        axes.set_zlabel("z label")
+        pyplot.title(self.name)
+        #axes.set_xlabel("length of crater in x (um)") 
+        axes.set_ylabel("length of crater in y (um)")
+        axes.set_zlabel("Ir coating of 1/4 um")
 
         pyplot.show()
 
@@ -181,11 +182,11 @@ x18_c10.integrate()
 x18_c10.visualize_3D(1.5,101)
 
 # x18 crater 2:
-x18_c2 = impact("x18_c2",0.5)
-x18_c2.add_data(x18_c2_x,x18_c2_f,x18_c2_g)
-x18_c2.get_coeffs(18)
-x18_c2.interp_data(np.linspace(0,1,201))
-x18_c2.integrate()
+#x18_c2 = impact("x18_c2",0.5)
+#x18_c2.add_data(x18_c2_x,x18_c2_f,x18_c2_g)
+#x18_c2.get_coeffs(18)
+#x18_c2.interp_data(np.linspace(0,1,201))
+#x18_c2.integrate()
 
-x18_c2.visualize_3D(1.5,101)
+#x18_c2.visualize_3D(1.5,101)
 
