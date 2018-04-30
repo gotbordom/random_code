@@ -168,6 +168,8 @@ x18_c1.integrate()
 
 
 x18_c1.visualize_3D(1.5,101) #,-0.22)
+#x18_c1.visualize_2D()
+
 
 
 # x18 crater 10:
